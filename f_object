@@ -1,0 +1,128 @@
+#version 330 core
+struct Material {
+    sampler2D diffuse;
+    sampler2D specular;
+    sampler2D emit;
+    float shininess;
+};
+struct DireLamp {
+    vec3 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+struct PointLamp {
+    vec3 position;
+    float constant;
+    float linear;
+    float quadratic;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+struct SpotLamp {
+    vec3 position;
+    vec3 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float cutOff;
+    float outCutOff;
+};
+
+in vec3 Norm;
+in vec3 FragPos;
+in vec2 TexCoords;
+out vec4 FragColor;
+uniform vec3 viewPos;
+uniform Material material;
+uniform DireLamp direLamp;
+uniform PointLamp pointLamp[4];
+uniform SpotLamp spotLamp;
+
+vec3 direLampLight(DireLamp lamp, vec3 norm, vec3 viewDire);
+vec3 pointLampLight(PointLamp lamp, vec3 norm, vec3 fragPos, vec3 viewDire);
+vec3 spotLampLight(SpotLamp lamp, vec3 norm, vec3 fragPos, vec3 viewDire);
+
+void main(){
+    vec3 norm = normalize(Norm);
+    vec3 viewDire = normalize(viewPos - FragPos);
+
+    vec3 result = vec3(.0);
+    for (int i = 0; i < 4; i ++) {
+        result += pointLampLight(pointLamp[i], norm, FragPos, viewDire);
+    }
+    result += direLampLight(direLamp, norm, viewDire);
+    result += spotLampLight(spotLamp, norm, FragPos, viewDire);
+
+    FragColor = vec4(result, 1.0);
+}
+
+vec3 direLampLight(DireLamp lamp, vec3 norm, vec3 viewDire){
+    // ambient:
+    vec3 ambient = lamp.ambient * vec3(texture(material.diffuse, TexCoords));
+
+    // diffuse:
+    vec3 ray = normalize(-lamp.direction);
+    float diff = max(dot(norm, ray), .0);
+    vec3 diffuse = lamp.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
+
+    // specular:
+    vec3 reflectDire = reflect(-ray, norm);
+    float spec = pow(max(dot(reflectDire, viewDire), 0.), 256);
+    vec3 specular = lamp.specular * spec * texture(material.specular, TexCoords).rgb;
+
+    return ambient + diffuse + specular;
+}
+
+vec3 pointLampLight(PointLamp lamp, vec3 norm, vec3 fragPos, vec3 viewDire){
+    // ambient:
+    vec3 ambient = lamp.ambient * vec3(texture(material.diffuse, TexCoords));
+
+    // diffuse:
+    vec3 ray = normalize(lamp.position - fragPos);
+    float diff = max(dot(norm, ray), .0);
+    vec3 diffuse = lamp.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
+
+    // specular:
+    vec3 reflectDire = reflect(-ray, norm);
+    float spec = pow(max(dot(reflectDire, viewDire), 0.), 256);
+    vec3 specular = lamp.specular * spec * texture(material.specular, TexCoords).rgb;
+
+    float distance = length(lamp.position - FragPos);
+    float attenuation = 1.0/(lamp.constant + lamp.constant*distance + lamp.quadratic*distance*distance);
+
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return ambient + diffuse + specular;
+}
+
+vec3 spotLampLight(SpotLamp lamp, vec3 norm, vec3 fragPos, vec3 viewDire){
+    vec3 ray = normalize(-lamp.position);
+    // ambient:
+    vec3 ambient = lamp.ambient * vec3(texture(material.diffuse, TexCoords));
+
+    // diffuse:
+    float diff = max(dot(norm, ray), .0);
+    vec3 diffuse = lamp.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
+
+    // specular:
+    vec3 reflectDire = reflect(-ray, norm);
+    float spec = pow(max(dot(reflectDire, viewDire), 0.), 256);
+    vec3 specular = lamp.specular * spec * texture(material.specular, TexCoords).rgb;
+
+    vec3 result = vec3(0.f);
+    float theta = dot(ray, normalize(-lamp.direction));
+    float epsilon = lamp.cutOff - lamp.outCutOff;
+    if(theta > lamp.cutOff) {
+        result = ambient + diffuse + specular;
+    } else if (lamp.outCutOff < theta && theta < lamp.cutOff) {
+        float intensity = clamp((theta - lamp.outCutOff)/epsilon, 0.0, 1.0);
+        result = ambient + diffuse*intensity + specular*intensity;
+    } else {
+        result = ambient;
+    }
+    return result;
+}
