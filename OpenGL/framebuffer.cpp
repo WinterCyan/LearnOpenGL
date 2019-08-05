@@ -57,11 +57,8 @@ int main(){
     glewExperimental = GL_TRUE;
     glewInit();
     
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/GL/OpenGL/vs.depth", "/Users/wintercyan/Documents/XCODE/GL/OpenGL/fs.depth");
-    MyShader frameShader = MyShader("/Users/wintercyan/Documents/XCODE/GL/OpenGL/vs.frame", "/Users/wintercyan/Documents/XCODE/GL/OpenGL/fs.frame");
+    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.depth");
+    MyShader frameShader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.frame", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.frame");
     
     float cubeVertices[] = {
         // Back face
@@ -150,9 +147,9 @@ int main(){
     };
     
     unsigned int texture1, texture2, texture3;
-    texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/GL/OpenGL/container.jpg");
-    texture2 = loadTexture("/Users/wintercyan/Documents/XCODE/GL/OpenGL/emit.jpg");
-    texture3 = loadTexture("/Users/wintercyan/Documents/XCODE/GL/OpenGL/window.png");
+    texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
+    texture2 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/emit.jpg");
+    texture3 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/window.png");
     
     unsigned int VBO1, VBO2, VAO1, VAO2;
     glGenVertexArrays(1, &VAO1);

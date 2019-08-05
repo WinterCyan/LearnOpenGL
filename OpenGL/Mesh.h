@@ -52,6 +52,7 @@ public:
         // index of two different kind of texture
         unsigned int diffuseNum = 1;
         unsigned int specularNum = 1;
+        unsigned int ambientNum = 1;
         unsigned int normalNum = 1;
         unsigned int heightNum = 1;
         for (int i = 0; i < textures.size(); i ++) {
@@ -66,6 +67,8 @@ public:
                 tex_number = to_string(normalNum++);
             else if (tex_type == "texture_height")
                 tex_number = to_string(heightNum++);
+            else if (tex_type == "texture_ambient")
+                tex_number = to_string(ambientNum++);
             
             // set int value for different texture
             glUniform1i(glGetUniformLocation(shader.ID, (tex_type + tex_number).c_str()), i);

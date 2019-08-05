@@ -37,7 +37,7 @@ MyCamera myCamera(glm::vec3(.0f, .0f, .3f));
 float lastX = 0.f, lastY = 0.f;
 bool firstMouse = true;
 
-int blending(){
+int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

@@ -15,7 +15,7 @@
 #include "stb_image.h"
 
 using namespace std;
-
+
 void mouse_callback(GLFWwindow* win, double xpos, double ypos);
 void processInput(GLFWwindow* win);
 void scroll_callback(GLFWwindow* win, double xoffset, double yoffset);
@@ -51,7 +51,7 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/GL/OpenGL/vs.depth", "/Users/wintercyan/Documents/XCODE/GL/OpenGL/fs.depth");
+    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.depth");
     
     float cubeVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -108,8 +108,8 @@ int main(){
     };
     
     unsigned int texture1, texture2;
-    texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/GL/OpenGL/container.jpg");
-    texture2 = loadTexture("/Users/wintercyan/Documents/XCODE/GL/OpenGL/emit.jpg");
+    texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
+    texture2 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/emit.jpg");
     
     unsigned int VBO1, VBO2, VAO1, VAO2;
     glGenVertexArrays(1, &VAO1);

@@ -33,7 +33,7 @@ MyCamera myCamera(glm::vec3(.0f, .0f, .3f));
 float lastX = 0.f, lastY = 0.f;
 bool firstMouse = true;
 
-int model(){
+int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -54,10 +54,10 @@ int model(){
     glewInit();
     glEnable(GL_DEPTH_TEST);
     
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/GL/OpenGL/modelvs", "/Users/wintercyan/Documents/XCODE/GL/OpenGL/modelfs");
+    MyShader shader ("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/modelvs", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/modelfs");
     
     
-    Model my_model("/Users/wintercyan/Documents/XCODE/GL/OpenGL/nanosuit/nanosuit.obj");
+    Model my_model("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/nanosuit_reflection/nanosuit.obj");
     
     while(!glfwWindowShouldClose(win)){
         float currFrame = glfwGetTime();
