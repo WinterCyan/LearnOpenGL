@@ -68,144 +68,82 @@ int main() {
     
     // data
     float cubeVertices[] = {
-        // positions          // normals
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-    float skyboxVertices[] = {
         // positions
-        -1.0f,  1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
         
-        -1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
         
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
         
-        -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
         
-        -1.0f,  1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
         
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f
+        -0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
     };
     
     // textures
-    unsigned int texture1;
-    texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
-    vector<const char*> faces = {
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/right.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/left.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/top.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/bottom.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/back.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/front.jpg"
-    };
-    unsigned int cubeMap = loadCubemap(faces);
+    
     
     // models
-    Model my_model("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/nanosuit_reflection/nanosuit.obj");
+    
 
     // shaders
-    MyShader shader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.reflect", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.reflect");
-    MyShader skyboxShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.cube", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.cube");
-    MyShader modelShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/modelvs", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/modelfs");
+    MyShader shader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo");
+    MyShader shader2("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.2");
+    MyShader shader3("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.3");
+    MyShader shader4("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.4");
     
     // all buffers and settings
-    // cube
-    unsigned int VBO1, VAO1;
-    glGenVertexArrays(1, &VAO1);
-    glBindVertexArray(VAO1);
-    glGenBuffers(1, &VBO1);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+    unsigned int cubeVAO, cubeVBO;
+    glGenVertexArrays(1, &cubeVAO);
+    glBindVertexArray(cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
-    
-    // skybox
-    unsigned int VBO2, VAO2;
-    glGenVertexArrays(1, &VAO2);
-    glBindVertexArray(VAO2);
-    glGenBuffers(1, &VBO2);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
-    shader.use();
-    shader.setInt("skyBox", 0);
-    skyboxShader.use();
-    skyboxShader.setInt("texCube", 0);
-    modelShader.use();
-    modelShader.setInt("skyBox", 0);
+    unsigned int shaderUBO;
+    glGenBuffers(1, &shaderUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, shaderUBO);
+    glBufferData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glUniformBlockBinding(shader.ID, glGetUniformBlockIndex(shader.ID, "CameraMatrices"), 0);
+    glUniformBlockBinding(shader2.ID, glGetUniformBlockIndex(shader2.ID, "CameraMatrices"), 0);
+    glUniformBlockBinding(shader3.ID, glGetUniformBlockIndex(shader3.ID, "CameraMatrices"), 0);
+    glUniformBlockBinding(shader4.ID, glGetUniformBlockIndex(shader4.ID, "CameraMatrices"), 0);
+//    glBindBufferBase(GL_UNIFORM_BUFFER, 2, shaderUBO);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, shaderUBO, 0, 2*sizeof(glm::mat4));
     
     // render iteration
     while(!glfwWindowShouldClose(win)){
@@ -224,35 +162,34 @@ int main() {
         auto view = myCamera.getViewMatrix();
         auto projection = glm::perspective(glm::radians(myCamera.Zoom), (float)800 / (float)600, .01f, 20.0f);
         
+        // copy to UBO
+        glBindBuffer(GL_UNIFORM_BUFFER, shaderUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        
         // bind buffers, configure shaders and draw objects
+        glBindVertexArray(cubeVAO);
         shader.use();
-        glBindVertexArray(VAO1);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
+        model = glm::mat4(1.);
+        model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));
         shader.setMat4("model", model);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
-        shader.setVec3("cameraPos", myCamera.Position);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shader2.use();
+        model = glm::mat4(1.);
+        model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
+        shader2.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shader3.use();
+        model = glm::mat4(1.);
+        model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));
+        shader3.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shader4.use();
+        model = glm::mat4(1.);
+        model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));
+        shader4.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         
-        modelShader.use();
-        modelShader.setMat4("model", model);
-        modelShader.setMat4("view", view);
-        modelShader.setMat4("projection", projection);
-        modelShader.setVec3("cameraPos", myCamera.Position);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
-        my_model.Draw(modelShader);
-        
-        skyboxShader.use();
-        glDepthFunc(GL_LEQUAL);
-        glBindVertexArray(VAO2);
-        glActiveTexture(GL_TEXTURE0);
-        view = glm::mat4(glm::mat3(view));
-        skyboxShader.setMat4("view", view);
-        skyboxShader.setMat4("projection", projection);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
         
         // final operation
         glfwSwapBuffers(win);
@@ -260,10 +197,9 @@ int main() {
     }
     
     // storage free up
-    glDeleteVertexArrays(1, &VAO1);
-    glDeleteVertexArrays(1, &VAO2);
-    glDeleteBuffers(1, &VBO2);
-    glDeleteBuffers(1, &VBO1);
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &cubeVBO);
+    glDeleteBuffers(1, &shaderUBO);
     
     // terminate
     glfwTerminate();

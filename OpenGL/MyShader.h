@@ -25,7 +25,7 @@ public:
 //    void setInt(const std::string& name, int value) const;
 //    void setFloat(const std::string& name, float value) const;
 
-    MyShader(const GLchar* vertexPath, const GLchar* fragmentPath){
+    MyShader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* geometryPath){
         std::string vShaderCode, fShaderCode;
         std::fstream vShaderFile, fShaderFile;
         
@@ -72,9 +72,44 @@ public:
             std::cout<<"fShader compile err.\n"<<fLog<<std::endl;
         }
         
+        unsigned int gShader = 0;
+        if (geometryPath) {
+            std::string gShaderCode;
+            std::fstream gShaderFile;
+            
+            gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+            
+            try {
+                gShaderFile.open(geometryPath);
+                std::stringstream gShaderStream;
+                gShaderStream << gShaderFile.rdbuf();
+                gShaderFile.close();
+                gShaderCode = gShaderStream.str();
+            } catch (std::ifstream::failure e) {
+                std::cout<<"ERROR::SHADER::FILE_NOT_PROPERLY_LOAD"<<std::endl;
+            }
+            
+            const char* gCode = gShaderCode.c_str();
+            
+            int gSucc;
+            char gLog[512];
+            
+            gShader = glCreateShader(GL_GEOMETRY_SHADER);
+            glShaderSource(gShader, 1, &gCode, NULL);
+            
+            glCompileShader(gShader);
+            glGetShaderiv(gShader, GL_COMPILE_STATUS, &gSucc);
+            if (!gSucc) {
+                glGetShaderInfoLog(gShader, 512, NULL, gLog);
+                std::cout<<"gShader compile err.\n"<<gLog<<std::endl;
+            }
+        }
+        
         ID = glCreateProgram();
         glAttachShader(ID, vShader);
         glAttachShader(ID, fShader);
+        if (geometryPath)
+            glAttachShader(ID, gShader);
         glLinkProgram(ID);
         
         glGetProgramiv(ID, GL_LINK_STATUS, &pSucc);
@@ -112,5 +147,9 @@ public:
     void setVec3(const std::string& name, glm::vec3 &value) const {
         glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
     }
+    void setVec2(const std::string& name, glm::vec2 &value) const {
+        glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    
 };
 #endif /* MyShader_h */

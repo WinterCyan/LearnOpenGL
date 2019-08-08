@@ -11,7 +11,7 @@
 		2904016822CE18760037AB3A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016722CE18760037AB3A /* libGLEW.2.1.0.dylib */; };
 		292836F322E7079200745530 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F222E7079200745530 /* libglfw.3.3.dylib */; };
 		292836F522E7117300745530 /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F422E7117300745530 /* libassimp.5.0.0.dylib */; };
-		299AB95722F8A4180005724B /* advancedGLSL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 299AB95622F8A3EB0005724B /* advancedGLSL.cpp */; };
+		2993382822FB29200007DCA4 /* instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2993382722FB29200007DCA4 /* instance.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,8 +56,10 @@
 		299140F722F17FB60013C211 /* framebuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = framebuffer.cpp; sourceTree = "<group>"; };
 		299140FB22F1D9D50013C211 /* cubemap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cubemap.cpp; sourceTree = "<group>"; };
 		299140FE22F2EB2D0013C211 /* functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
+		2993382722FB29200007DCA4 /* instance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instance.cpp; sourceTree = "<group>"; };
 		2999CCC022E6FF8D00C65343 /* libassimpd.5.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimpd.5.0.0.dylib; path = ../assimp/build/code/Debug/libassimpd.5.0.0.dylib; sourceTree = "<group>"; };
 		299AB95622F8A3EB0005724B /* advancedGLSL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = advancedGLSL.cpp; sourceTree = "<group>"; };
+		299AB95822FA59C20005724B /* gs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gs.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,8 @@
 				299140F722F17FB60013C211 /* framebuffer.cpp */,
 				299140FB22F1D9D50013C211 /* cubemap.cpp */,
 				299AB95622F8A3EB0005724B /* advancedGLSL.cpp */,
+				299AB95822FA59C20005724B /* gs.cpp */,
+				2993382722FB29200007DCA4 /* instance.cpp */,
 				299140F522EF24880013C211 /* stencil.cpp */,
 			);
 			path = OpenGL;
@@ -191,7 +195,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				299AB95722F8A4180005724B /* advancedGLSL.cpp in Sources */,
+				2993382822FB29200007DCA4 /* instance.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
