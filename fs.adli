@@ -1,0 +1,32 @@
+#version 330 core
+
+in vec3 Norm;
+in vec3 FragPos;
+in vec2 TexCoords;
+
+out vec4 FragColor;
+
+uniform sampler2D floor;
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+
+void main(){
+    vec3 tex = texture(floor, TexCoords).rgb;
+
+    vec3 lightColor = vec3(1.);
+    vec3 norm = normalize(Norm);
+    vec3 lightRay = normalize(lightPos - FragPos);
+    vec3 reflectRay = reflect(-lightRay, norm);
+    vec3 viewRay = normalize(viewPos - FragPos);
+    vec3 halfway = normalize(viewRay + lightRay);
+
+    float ambient = .01;
+    float diffuse = max(dot(lightRay, norm), 0.);
+    float specular = dot(norm, halfway);
+
+    vec3 ambientValue = lightColor * tex * ambient;
+    vec3 diffuseValue = lightColor * tex * diffuse;
+    vec3 specularValue = lightColor * tex * specular * .5;
+
+    FragColor = vec4(ambientValue + diffuseValue + specularValue, 1.);
+}

@@ -114,7 +114,6 @@ int main(){
         -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
         5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
-    
     float transparentVertices[] = {
         // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
         0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
@@ -125,7 +124,6 @@ int main(){
         1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
         1.0f,  0.5f,  0.0f,  1.0f,  0.0f
     };
-    
     float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
         // positions   // texCoords
         -1.0f,  1.0f,  0.0f, 1.0f,
@@ -136,16 +134,14 @@ int main(){
         1.0f, -1.0f,  1.0f, 0.0f,
         1.0f,  1.0f,  1.0f, 1.0f
     };
-    
-    vector<glm::vec3> vegetation
-    {
+    vector<glm::vec3> vegetation {
         glm::vec3(-1.5f, 0.0f, -0.48f),
         glm::vec3( 1.5f, 0.0f, 0.51f),
         glm::vec3( 0.0f, 0.0f, 0.7f),
         glm::vec3(-0.3f, 0.0f, -2.3f),
         glm::vec3 (0.5f, 0.0f, -0.6f)
     };
-    
+
     unsigned int texture1, texture2, texture3;
     texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
     texture2 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/emit.jpg");

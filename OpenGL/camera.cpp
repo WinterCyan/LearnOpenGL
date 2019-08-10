@@ -35,14 +35,14 @@ MyCamera myCamera(glm::vec3(.0f, .0f, .3f));
 float lastX = 0.f, lastY = 0.f;
 bool firstMouse = true;
 
-int camera(){
+int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
-    GLFWwindow *win = glfwCreateWindow(800, 600, "Learn OpenGL", NULL, NULL);
+    GLFWwindow *win = glfwCreateWindow(1200, 800, "Learn OpenGL", NULL, NULL);
     if (!win){
         std::cout<<"WINDOW CREATE FAILED."<<std::endl;
         glfwTerminate();
@@ -56,7 +56,7 @@ int camera(){
     glewInit();
     glEnable(GL_DEPTH_TEST);
     
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/GL/OpenGL/vfile.vs", "/Users/wintercyan/Documents/XCODE/GL/OpenGL/ffile.fs");
+    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vfile.vs", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/ffile.fs", NULL);
     
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -127,7 +127,7 @@ int camera(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     int width, height, nrChannels;
-    unsigned char* pic_data = stbi_load("/Users/wintercyan/Documents/XCODE/GL/OpenGL/container.jpg",&width, &height, &nrChannels, 0);
+    unsigned char* pic_data = stbi_load("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg",&width, &height, &nrChannels, 0);
     if (pic_data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pic_data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -143,7 +143,7 @@ int camera(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     int width2, height2, nrChannels2;
-    unsigned char* pic_data2 = stbi_load("/Users/wintercyan/Documents/XCODE/GL/OpenGL/face.png",&width2, &height2, &nrChannels2, 0);
+    unsigned char* pic_data2 = stbi_load("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/face.png",&width2, &height2, &nrChannels2, 0);
     if (pic_data2) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pic_data2);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -191,7 +191,7 @@ int camera(){
         shader.use();
         shader.setFloat("c", c);
         
-        glm::mat4 projection = glm::perspective(glm::radians(myCamera.Zoom), (float)800/600, .1f, 100.f);
+        glm::mat4 projection = glm::perspective(glm::radians(myCamera.Zoom), (float)1200/800, .1f, 100.f);
         glm::mat4 view = myCamera.getViewMatrix();
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
@@ -201,6 +201,7 @@ int camera(){
         for (unsigned int i = 0; i < 10; i ++) {
             glm::mat4 model = glm::mat4(1.f);
             model = glm::translate(model, cubePos[i]);
+//            model = glm::scale(model, glm::vec3(10.));
             float angle = 20.f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.f, .3f, .5f));
             shader.setMat4("model", model);

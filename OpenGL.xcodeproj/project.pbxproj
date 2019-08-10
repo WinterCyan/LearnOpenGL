@@ -11,7 +11,7 @@
 		2904016822CE18760037AB3A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016722CE18760037AB3A /* libGLEW.2.1.0.dylib */; };
 		292836F322E7079200745530 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F222E7079200745530 /* libglfw.3.3.dylib */; };
 		292836F522E7117300745530 /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F422E7117300745530 /* libassimp.5.0.0.dylib */; };
-		2993382822FB29200007DCA4 /* instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2993382722FB29200007DCA4 /* instance.cpp */; };
+		2993383722FECCF00007DCA4 /* shadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2993383622FECCF00007DCA4 /* shadow.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -57,6 +57,9 @@
 		299140FB22F1D9D50013C211 /* cubemap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cubemap.cpp; sourceTree = "<group>"; };
 		299140FE22F2EB2D0013C211 /* functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
 		2993382722FB29200007DCA4 /* instance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instance.cpp; sourceTree = "<group>"; };
+		2993383122FD9AC20007DCA4 /* advancedLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = advancedLight.cpp; sourceTree = "<group>"; };
+		2993383422FEC2F40007DCA4 /* anti.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = anti.cpp; sourceTree = "<group>"; };
+		2993383622FECCF00007DCA4 /* shadow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = shadow.cpp; sourceTree = "<group>"; };
 		2999CCC022E6FF8D00C65343 /* libassimpd.5.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimpd.5.0.0.dylib; path = ../assimp/build/code/Debug/libassimpd.5.0.0.dylib; sourceTree = "<group>"; };
 		299AB95622F8A3EB0005724B /* advancedGLSL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = advancedGLSL.cpp; sourceTree = "<group>"; };
 		299AB95822FA59C20005724B /* gs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gs.cpp; sourceTree = "<group>"; };
@@ -99,6 +102,7 @@
 			children = (
 				299140FE22F2EB2D0013C211 /* functions.h */,
 				293E002E22D593120060FD5F /* color.cpp */,
+				2993383122FD9AC20007DCA4 /* advancedLight.cpp */,
 				2904016B22CE18CC0037AB3A /* window.cpp */,
 				293E002B22D057370060FD5F /* learnglm.cpp */,
 				293E002C22D0E0890060FD5F /* coordinate.cpp */,
@@ -117,6 +121,8 @@
 				293759B522ED96C0000ACCBB /* depth.cpp */,
 				299140F622EF26DE0013C211 /* blending.cpp */,
 				299140F722F17FB60013C211 /* framebuffer.cpp */,
+				2993383422FEC2F40007DCA4 /* anti.cpp */,
+				2993383622FECCF00007DCA4 /* shadow.cpp */,
 				299140FB22F1D9D50013C211 /* cubemap.cpp */,
 				299AB95622F8A3EB0005724B /* advancedGLSL.cpp */,
 				299AB95822FA59C20005724B /* gs.cpp */,
@@ -195,7 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2993382822FB29200007DCA4 /* instance.cpp in Sources */,
+				2993383722FECCF00007DCA4 /* shadow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

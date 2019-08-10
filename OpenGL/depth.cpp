@@ -51,7 +51,7 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.depth");
+    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.depth", NULL);
     
     float cubeVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,

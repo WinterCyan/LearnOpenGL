@@ -49,6 +49,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // for macos
+    glfwWindowHint(GLFW_SAMPLES, 4);
     // create and setup window
     GLFWwindow *win = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_NAME, NULL, NULL);
     if (!win){
@@ -65,6 +66,7 @@ int main() {
     
     // GL configuration
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
     
     // data
     float cubeVertices[] = {
@@ -119,10 +121,10 @@ int main() {
     
 
     // shaders
-    MyShader shader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo");
-    MyShader shader2("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.2");
-    MyShader shader3("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.3");
-    MyShader shader4("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.4");
+    MyShader shader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo", NULL);
+    MyShader shader2("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.2", NULL);
+    MyShader shader3("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.3", NULL);
+    MyShader shader4("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.ubo", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.ubo.4", NULL);
     
     // all buffers and settings
     unsigned int cubeVAO, cubeVBO;
