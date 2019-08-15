@@ -1,8 +1,8 @@
 //
-//  shadow.cpp
+//  pointshadow.cpp
 //  OpenGL
 //
-//  Created by Winter Cyan on 2019/8/10.
+//  Created by Winter Cyan on 2019/8/15.
 //  Copyright © 2019 Winter Cyan. All rights reserved.
 //
 
@@ -86,7 +86,7 @@ int main(){
         -5.f, 0.f, 5.f,  0.f, 1.f, 0.f, 0.f, 1.f,
         5.f, 0.f, 5.f,   0.f, 1.f, 0.f, 1.f, 1.f
     };
-    float cubeVertices[] = {
+    float cubeVertices[] = {s
         // back face
         -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
         1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
@@ -227,8 +227,8 @@ int main(){
         glClear(GL_DEPTH_BUFFER_BIT);   // !!! have to clear depth buffer when bind framebuffer to a new one !!!
         shadowDepthShader.use();
         shadowDepthShader.setMat4("lightTransform", lightTransform);
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, floorTex);
+        //        glActiveTexture(GL_TEXTURE0);
+        //        glBindTexture(GL_TEXTURE_2D, floorTex);
         glBindVertexArray(floorVAO);
         model = glm::mat4(1.f);
         shadowDepthShader.setMat4("model", model);
@@ -277,7 +277,7 @@ int main(){
         shadowDrawShader.setMat4("model", model);
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
+        
         glfwSwapBuffers(win);
         glfwPollEvents();
     }
