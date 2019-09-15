@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		2904016622CE186B0037AB3A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016522CE186B0037AB3A /* OpenGL.framework */; };
 		2904016822CE18760037AB3A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016722CE18760037AB3A /* libGLEW.2.1.0.dylib */; };
-		2924326B23054EFB0055410B /* pointshadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2924326A23054EFB0055410B /* pointshadow.cpp */; };
 		292836F322E7079200745530 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F222E7079200745530 /* libglfw.3.3.dylib */; };
 		292836F522E7117300745530 /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F422E7117300745530 /* libassimp.5.0.0.dylib */; };
+		298A35322328957B00B3AE24 /* pointshadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2924326A23054EFB0055410B /* pointshadow.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -203,7 +203,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2924326B23054EFB0055410B /* pointshadow.cpp in Sources */,
+				298A35322328957B00B3AE24 /* pointshadow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

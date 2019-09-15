@@ -1,0 +1,19 @@
+#version 330 core
+
+layout (triangles) in; // a triangle comes in, with 3 vertices which is gl_in[3]
+layout (triangle_strip, max_vertices=18) out; // for every vertex in triangle, emit 6 vertices
+
+uniform mat4 projectionMatrices[6];
+out vec4 FragPos;
+
+void main() {
+    for (int i = 0; i < 6; i++){ // for one face of cube
+        gl_Layer = i; // switch to different faces
+        for (int j = 0; j < 3; j++) { // for every faces
+            FragPos = gl_in[j].gl_Position; // get original position
+            gl_Position = projectionMatrices[i] * FragPos; // and calculate projected position
+            EmitVertex(); // emit 3 vertices for one triangle
+        }
+        EndPrimitive();
+    }
+}

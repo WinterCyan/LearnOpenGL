@@ -18,6 +18,7 @@
 #include "MyShader.h"
 #include <cmath>
 #include "MyCamera.h"
+#include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -32,11 +33,13 @@ unsigned int loadTexture(char const * path);
 void mouse_callback(GLFWwindow* win, double xpos, double ypos);
 void processInput(GLFWwindow* win);
 void scroll_callback(GLFWwindow* win, double xoffset, double yoffset);
+void renderScene(MyShader shader);
+void renderCube();
 
 float deltaTime = 0.f;
 float lastFrame = 0.f;
 
-MyCamera myCamera(glm::vec3(-1.0f, 1.f, 3.f));
+MyCamera myCamera(glm::vec3(.0f, 0.f, 0.f));
 float lastX = 0.f, lastY = 0.f;
 bool firstMouse = true;
 
@@ -63,150 +66,44 @@ int main(){
     glewInit();
     glEnable(GL_DEPTH_TEST);
     
-    MyShader floorShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.adli", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.adli", NULL);
-    MyShader shadowDepthShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shadow", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shadow", NULL);
-    MyShader shadowVisualShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shadowVisual", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shadowVisual", NULL);
-    MyShader shadowDrawShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shadowdraw", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shadowdraw", NULL);
-    shadowVisualShader.use();
-    shadowVisualShader.setInt("depthTex", 0);
-    shadowDrawShader.use();
-    shadowDrawShader.setInt("floor", 0);
-    shadowDrawShader.setInt("depthTexture", 1);
+    MyShader shaderDrawScene("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_scene", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_scene", NULL);
+    MyShader shaderDrawDepth("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/gs.shader_draw_depth");
+    MyShader shaderDrawAll("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_all", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_all", NULL);
+    shaderDrawScene.use();
+    shaderDrawScene.setInt("cubeTexture", 0);
+    shaderDrawAll.use();
+    shaderDrawAll.setInt("cubeTexture", 0);
+    shaderDrawAll.setInt("depthCube", 1);
     
-    unsigned int floorTex = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/floor.jpg");
-    unsigned int cubeTex = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
+    unsigned int cubeTexture = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/floor.jpg");
     
-    float floorVer[] = {
-        // pos           // norm        // tex coords
-        -5.f, 0.f, -5.f, 0.f, 1.f, 0.f, 0.f, 0.f,
-        5.f, 0.f,  -5.f, 0.f, 1.f, 0.f, 1.f, 0.f,
-        -5.f, 0.f,  5.f, 0.f, 1.f, 0.f, 0.f, 1.f,
-        
-        5.f, 0.f, -5.f,  0.f, 1.f, 0.f, 1.f, 0.f,
-        -5.f, 0.f, 5.f,  0.f, 1.f, 0.f, 0.f, 1.f,
-        5.f, 0.f, 5.f,   0.f, 1.f, 0.f, 1.f, 1.f
-    };
-    float cubeVertices[] = {s
-        // back face
-        -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-        1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-        1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
-        1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-        -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-        -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-        // front face
-        -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-        1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-        1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-        1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-        -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-        -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-        // left face
-        -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-        -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-        -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-        -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-        -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-        -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-        // right face
-        1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-        1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-        1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right
-        1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-        1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-        1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left
-        // bottom face
-        -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-        1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-        1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-        1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-        -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-        -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-        // top face
-        -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-        1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-        1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right
-        1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-        -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-        -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left
-    };
-    float quadVertices[] = {
-        // positions        // texture Coords
-        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-        
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-    };
+    auto lightPos = glm::vec3(.0f, .0f, .0f);
     
-    unsigned int floorVAO, floorVBO;
-    glGenVertexArrays(1, &floorVAO);
-    glBindVertexArray(floorVAO);
-    glGenBuffers(1, &floorVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, floorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floorVer), &floorVer, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
-    glEnableVertexAttribArray(2);
-    unsigned int cubeVAO, cubeVBO;
-    glGenVertexArrays(1, &cubeVAO);
-    glBindVertexArray(cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
-    glEnableVertexAttribArray(2);
-    unsigned int quadVAO, quadVBO;
-    glGenVertexArrays(1, &quadVAO);
-    glBindVertexArray(quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
-    
-    // framebuffer
-    unsigned int depthFrameBuffer;
-    glGenFramebuffers(1, & depthFrameBuffer);
-    // depth TEXTURE of framebuffer
-    unsigned int depthTexture;
+    const unsigned int SHADOW_WIDTH = 800, SHADOW_HEIGHT = 800;
+    unsigned int frameBuffer, depthTexture;
+    glGenFramebuffers(1, &frameBuffer);
     glGenTextures(1, &depthTexture);
-    glBindTexture(GL_TEXTURE_2D, depthTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, WIDTH, HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // attach depth texture to framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, depthFrameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);    // depth texture as a DEPTH-ATTACHMENT
-    glDrawBuffer(GL_NONE);  // in case of incomplete
-    glReadBuffer(GL_NONE);  // in case of incomplete
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthTexture);
+    for (unsigned int i = 0; i < 6; ++ i)
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+//        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, WIDTH, HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
         cout<<"ERROR::FRAMEBUFFER::framebuffer not complete."<<endl;
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
-    // shadow map
-    auto cubePos = glm::vec3(.0f, 1.f, .0f);
-    auto cubePos2 = glm::vec3(1.f, 3.f, 3.f);
-    
-    auto lightPos = glm::vec3(-3.f, 5.f, 3.f);
-    auto lightProjection = glm::ortho(-10.f, 10.f, -10.f, 10.f, 1.f, 17.f);
-    auto lightView = glm::lookAt(lightPos, glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
-    auto lightTransform = lightProjection * lightView;
-    
+    shaderDrawScene.use();
+    shaderDrawScene.setInt("cubeTexture", 0);
+    shaderDrawScene.setInt("depthTexture", 1);
     while(!glfwWindowShouldClose(win)){
         float currFrame = glfwGetTime();
         deltaTime = currFrame - lastFrame;
@@ -214,76 +111,53 @@ int main(){
         
         processInput(win);
         
-        auto projection = glm::perspective(glm::radians(myCamera.Zoom), (float)WIDTH/HEIGHT, .1f, 100.f);
+        auto projection = glm::perspective(glm::radians(myCamera.Zoom), (float)WIDTH/(float)HEIGHT, .1f, 100.f);
         auto view = myCamera.getViewMatrix();
-        auto model = glm::mat4(1.f);
-        
+    
         glClearColor(.0f, .0f, .0f, .1f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         
-        // render depth texture to framebuffer
-        glViewport(0, 0, WIDTH, HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthFrameBuffer);
-        glClear(GL_DEPTH_BUFFER_BIT);   // !!! have to clear depth buffer when bind framebuffer to a new one !!!
-        shadowDepthShader.use();
-        shadowDepthShader.setMat4("lightTransform", lightTransform);
-        //        glActiveTexture(GL_TEXTURE0);
-        //        glBindTexture(GL_TEXTURE_2D, floorTex);
-        glBindVertexArray(floorVAO);
-        model = glm::mat4(1.f);
-        shadowDepthShader.setMat4("model", model);
-        glCullFace(GL_FRONT);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glCullFace(GL_BACK);
-        glBindVertexArray(cubeVAO);
-        model = glm::mat4(1.f);
-        model = glm::scale(model, glm::vec3(.5f));
-        model = glm::translate(model, cubePos);
-        shadowDepthShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1.f);
-        model = glm::scale(model, glm::vec3(.2f));
-        model = glm::translate(model, cubePos2);
-        shadowDepthShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        float near_plane = .1f;
+        float far_plane  = 50.0f;
+        glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)WIDTH / (float)HEIGHT, near_plane, far_plane);
+        std::vector<glm::mat4> shadowTransforms;
+        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+        
+        // draw depth to cube texture
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        shaderDrawDepth.use();
+        shaderDrawDepth.setFloat("far_plane", 50.f);
+        shaderDrawDepth.setVec3("lightPos", lightPos);
+        for (unsigned int i = 0; i < 6; i++)
+            shaderDrawDepth.setMat4("projectionMatrices["+to_string(i)+"]", shadowTransforms[i]);
+        renderScene(shaderDrawDepth);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         
-        // render objects with shadow
+        // draw scene
         glViewport(0, 0, WIDTH, HEIGHT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shadowDrawShader.use();
-        shadowDrawShader.setMat4("projection", projection);
-        shadowDrawShader.setMat4("view", view);
-        shadowDrawShader.setMat4("lightTransform", lightTransform);
-        shadowDrawShader.setVec3("lightPos", lightPos);
-        shadowDrawShader.setVec3("viewPos", myCamera.Position);
+        glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
+        shaderDrawAll.use();
+        shaderDrawAll.setMat4("projection", projection);
+        shaderDrawAll.setMat4("view", view);
+        shaderDrawAll.setVec3("viewPos", myCamera.Position);
+        shaderDrawAll.setVec3("lightPos", lightPos);
+        shaderDrawAll.setFloat("far_plane", 50.f);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, floorTex);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, depthTexture);
-        model = glm::mat4(1.f);
-        shadowDrawShader.setMat4("model", model);
-        glBindVertexArray(floorVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        model = glm::mat4(1.f);
-        model = glm::scale(model, glm::vec3(.5f));
-        model = glm::translate(model, cubePos);
-        shadowDrawShader.setMat4("model", model);
-        glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1.f);
-        model = glm::scale(model, glm::vec3(.2f));
-        model = glm::translate(model, cubePos2);
-        shadowDrawShader.setMat4("model", model);
-        glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, depthTexture);
+        renderScene(shaderDrawAll);
         
         glfwSwapBuffers(win);
         glfwPollEvents();
     }
-    
-    glDeleteVertexArrays(1, &floorVAO);
-    glDeleteBuffers(1, &floorVBO);
     
     glfwTerminate();
     
@@ -362,4 +236,111 @@ unsigned int loadTexture(char const * path){
     }
     
     return textureID;
+}
+
+void renderCube(){
+    unsigned int cubeVAO = 0;
+    unsigned int cubeVBO = 0;
+    if (cubeVAO == 0) {
+        float cubeVertices[] = {
+            // back face
+            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+            1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+            1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
+            1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+            -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+            // front face
+            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+            1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+            1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+            1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+            -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+            // left face
+            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+            -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+            -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+            // right face
+            1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+            1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+            1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right
+            1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+            1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+            1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left
+            // bottom face
+            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+            1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+            1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+            1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+            -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+            // top face
+            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+            1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+            1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right
+            1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+            -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left
+        };
+        glGenVertexArrays(1, &cubeVAO);
+        glBindVertexArray(cubeVAO);
+        glGenBuffers(1, &cubeVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+    glBindVertexArray(cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &cubeVBO);
+}
+
+void renderScene(MyShader shader){
+    // room cube
+    shader.use();
+    auto model = glm::mat4(1.f);
+    model = glm::scale(model, glm::vec3(5.f));
+    shader.setMat4("model", model);
+    shader.setBool("norm_reverse", true);
+    renderCube();
+    shader.setBool("norm_reverse", false);
+//     cubes
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0));
+//    model = glm::scale(model, glm::vec3(0.5f));
+//    shader.setMat4("model", model);
+//    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(2.0f, 3.0f, 1.0));
+//    model = glm::scale(model, glm::vec3(0.75f));
+//    shader.setMat4("model", model);
+//    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(-3.0f, -1.0f, 0.0));
+//    model = glm::scale(model, glm::vec3(0.5f));
+//    shader.setMat4("model", model);
+//    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(-1.5f, 1.0f, 1.5));
+//    model = glm::scale(model, glm::vec3(0.5f));
+//    shader.setMat4("model", model);
+//    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(-1.5f, 2.0f, -3.0));
+//    model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+//    model = glm::scale(model, glm::vec3(0.75f));
+//    shader.setMat4("model", model);
+//    renderCube();
 }
