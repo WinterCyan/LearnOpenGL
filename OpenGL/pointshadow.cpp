@@ -77,8 +77,6 @@ int main(){
     
     unsigned int cubeTexture = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/floor.jpg");
     
-    auto lightPos = glm::vec3(.0f, .0f, .0f);
-    
     const unsigned int SHADOW_WIDTH = 800, SHADOW_HEIGHT = 800;
     unsigned int frameBuffer, depthTexture;
     glGenFramebuffers(1, &frameBuffer);
@@ -113,13 +111,15 @@ int main(){
         
         auto projection = glm::perspective(glm::radians(myCamera.Zoom), (float)WIDTH/(float)HEIGHT, .1f, 100.f);
         auto view = myCamera.getViewMatrix();
+        float z = sin(glfwGetTime()) * 3;
+        auto lightPos = glm::vec3(0.f, .0f, z);
     
         glClearColor(.0f, .0f, .0f, .1f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         
         float near_plane = .1f;
-        float far_plane  = 50.0f;
-        glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)WIDTH / (float)HEIGHT, near_plane, far_plane);
+        float far_plane  = 25.0f;
+        glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
         std::vector<glm::mat4> shadowTransforms;
         shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
         shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
@@ -133,7 +133,7 @@ int main(){
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glClear(GL_DEPTH_BUFFER_BIT);
         shaderDrawDepth.use();
-        shaderDrawDepth.setFloat("far_plane", 50.f);
+        shaderDrawDepth.setFloat("far_plane", far_plane);
         shaderDrawDepth.setVec3("lightPos", lightPos);
         for (unsigned int i = 0; i < 6; i++)
             shaderDrawDepth.setMat4("projectionMatrices["+to_string(i)+"]", shadowTransforms[i]);
@@ -148,7 +148,7 @@ int main(){
         shaderDrawAll.setMat4("view", view);
         shaderDrawAll.setVec3("viewPos", myCamera.Position);
         shaderDrawAll.setVec3("lightPos", lightPos);
-        shaderDrawAll.setFloat("far_plane", 50.f);
+        shaderDrawAll.setFloat("far_plane", far_plane);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
         glActiveTexture(GL_TEXTURE1);
@@ -316,31 +316,31 @@ void renderScene(MyShader shader){
     shader.setBool("norm_reverse", true);
     renderCube();
     shader.setBool("norm_reverse", false);
-//     cubes
-//    model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0));
-//    model = glm::scale(model, glm::vec3(0.5f));
-//    shader.setMat4("model", model);
-//    renderCube();
-//    model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(2.0f, 3.0f, 1.0));
-//    model = glm::scale(model, glm::vec3(0.75f));
-//    shader.setMat4("model", model);
-//    renderCube();
-//    model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(-3.0f, -1.0f, 0.0));
-//    model = glm::scale(model, glm::vec3(0.5f));
-//    shader.setMat4("model", model);
-//    renderCube();
-//    model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(-1.5f, 1.0f, 1.5));
-//    model = glm::scale(model, glm::vec3(0.5f));
-//    shader.setMat4("model", model);
-//    renderCube();
-//    model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(-1.5f, 2.0f, -3.0));
-//    model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-//    model = glm::scale(model, glm::vec3(0.75f));
-//    shader.setMat4("model", model);
-//    renderCube();
+//     cubesx
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0));
+    model = glm::scale(model, glm::vec3(0.5f));
+    shader.setMat4("model", model);
+    renderCube();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(2.0f, 3.0f, 1.0));
+    model = glm::scale(model, glm::vec3(0.75f));
+    shader.setMat4("model", model);
+    renderCube();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-3.0f, -1.0f, 0.0));
+    model = glm::scale(model, glm::vec3(0.5f));
+    shader.setMat4("model", model);
+    renderCube();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-1.5f, 1.0f, 1.5));
+    model = glm::scale(model, glm::vec3(0.5f));
+    shader.setMat4("model", model);
+    renderCube();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-1.5f, 2.0f, -3.0));
+    model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+    model = glm::scale(model, glm::vec3(0.75f));
+    shader.setMat4("model", model);
+    renderCube();
 }

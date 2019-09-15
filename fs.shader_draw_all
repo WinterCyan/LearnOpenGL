@@ -36,12 +36,13 @@ void main() {
     float diffuse = max(dot(norm, lightRay), .0);
     vec3 diffuse_color = diffuse * texColor;
     // specular
-    float specular = pow(dot(halfway, norm), 64.);
+    float specular = pow(max(dot(halfway, norm), 0.), 64.);
     vec3 specular_color = specular * texColor;
     // shadow or not
     float shadow = shadowOrNot(fs_in.FragPos);
     // total
-    vec3 final_color = ambient_color + (1.0 - shadow) * (diffuse_color + specular_color);
+    //vec3 final_color = ambient_color + (1.0 - shadow) * (diffuse_color + specular_color);
+    vec3 final_color = ambient_color + (1.0 - shadow) * diffuse_color;
     //vec3 final_color = ambient_color + shadow * (diffuse_color + specular_color);
     //vec3 final_color = ambient_color + diffuse_color + specular_color;
     FragColor = vec4(final_color, 1.0);
