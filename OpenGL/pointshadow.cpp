@@ -66,16 +66,16 @@ int main(){
     glewInit();
     glEnable(GL_DEPTH_TEST);
     
-    MyShader shaderDrawScene("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_scene", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_scene", NULL);
-    MyShader shaderDrawDepth("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_depth", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/gs.shader_draw_depth");
-    MyShader shaderDrawAll("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_all", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_all", NULL);
+    MyShader shaderDrawScene("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_scene", "/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_scene", NULL);
+    MyShader shaderDrawDepth("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_depth", "/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_depth", "/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/gs.shader_draw_depth");
+    MyShader shaderDrawAll("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/vs.shader_draw_all", "/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/fs.shader_draw_all", NULL);
     shaderDrawScene.use();
     shaderDrawScene.setInt("cubeTexture", 0);
     shaderDrawAll.use();
     shaderDrawAll.setInt("cubeTexture", 0);
     shaderDrawAll.setInt("depthCube", 1);
     
-    unsigned int cubeTexture = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/floor.jpg");
+    unsigned int cubeTexture = loadTexture("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/floor.jpg");
     
     const unsigned int SHADOW_WIDTH = 800, SHADOW_HEIGHT = 800;
     unsigned int frameBuffer, depthTexture;

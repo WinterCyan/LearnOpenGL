@@ -1,0 +1,61 @@
+#version 330 core
+out vec4 FragColor;
+uniform sampler2D wallTexture;
+uniform sampler2D normalTexture;
+uniform sampler2D heightTexture;
+uniform float height_scale;
+in VS_OUT {
+    vec2 TexCoords;
+    vec3 FragPosInTBN;
+    vec3 viewPosInTBN;
+    vec3 lightPosInTBN;
+} fs_in;
+vec2 getDisp(vec2 texCoords, vec3 viewDir){   
+    const float num_of_layers = 30;
+    float deltaDepth = 1.0 / num_of_layers;
+    vec2 P = viewDir.xy * height_scale;
+    vec2 deltaTexCoords = P / num_of_layers;
+    vec2 currentTexCoords = texCoords;
+    //float currentDepth = 1.0 - texture(heightTexture, currentTexCoords).r;
+    float currentDepth = texture(heightTexture, currentTexCoords).r;
+    float currentLayerDepth = 0.0;
+    while(currentLayerDepth < currentDepth) {
+        currentTexCoords -= deltaTexCoords;
+        currentLayerDepth += deltaDepth;
+        currentDepth = texture(heightTexture, currentTexCoords).r;
+        if (currentLayerDepth > currentDepth) { // current point is the correct one
+            vec2 currentTexCoords2 = currentTexCoords + deltaTexCoords; // back to last incorrect layer
+            float currentLayerDepth2 = currentLayerDepth - deltaDepth; // back to last incorrect layer
+            float currentDepth2 = texture(heightTexture, currentTexCoords).r;
+            float delta = currentLayerDepth - currentDepth;
+            float delta2 = currentDepth2 - currentLayerDepth2;
+            vec2 moveFromIncorrect = (delta2 / (delta + delta2)) * deltaTexCoords ;
+            return currentTexCoords2 - moveFromIncorrect; 
+        }
+    }
+    return currentTexCoords;
+}
+void main() {
+    vec3 viewRay = normalize(fs_in.viewPosInTBN - fs_in.FragPosInTBN); // from fragment to viewer
+    vec2 texCoords = fs_in.TexCoords;
+    texCoords = getDisp(texCoords, viewRay);
+    if (texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < .0 ||
+texCoords.y < .0)
+        discard;
+    vec3 Norm = texture(normalTexture, texCoords).rgb;
+    Norm = normalize(Norm * 2.0 - 1.0);
+    vec3 texColor = texture(wallTexture, texCoords).rgb;
+    vec3 lightRay = normalize(fs_in.lightPosInTBN - fs_in.FragPosInTBN); // from fragment to lightPos;
+    vec3 halfway = normalize(viewRay + lightRay);
+    // ambient
+    vec3 ambient_color = .3 * texColor;
+    // diffuse
+    float diffuse = max(dot(Norm, lightRay), .0);
+    vec3 diffuse_color = diffuse * texColor;
+    // specular
+    float specular = pow(max(dot(halfway, Norm), 0.), 32.);
+    vec3 specular_color = 2 * specular * texColor;
+    // total
+    vec3 final_color = ambient_color + diffuse_color + specular_color;
+    FragColor = vec4(final_color, 1.0);
+}

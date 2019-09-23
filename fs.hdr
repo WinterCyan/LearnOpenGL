@@ -1,0 +1,28 @@
+#version 330 core
+uniform sampler2D wallTexture;
+struct Light {
+    vec3 Pos;
+    vec3 Color;
+};
+in VS_OUT {
+    vec2 TexCoords;
+    vec3 Norm;
+    vec3 FragPos;
+} fs_in;
+out vec4 FragColor;
+uniform Light lights[4];
+
+void main() {
+    vec3 color = texture(wallTexture, fs_in.TexCoords).rgb;
+    vec3 result = vec3(0.0);
+    for (int i = 0; i < 4; i ++) {
+        vec3 lightDir = normalize(lights[i].Pos - fs_in.FragPos);
+        float diff = max(dot(lightDir, fs_in.Norm), 0.0);
+        vec3 diffuse = lights[i].Color * diff * color;
+        vec3 inner_result = diffuse;
+        float distance = length(fs_in.FragPos - lights[i].Pos);
+        inner_result *= 1.0 / (distance*distance);
+        result += inner_result;
+    }
+    FragColor = vec4(result, 1.0);
+}
