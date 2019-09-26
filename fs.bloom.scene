@@ -1,0 +1,35 @@
+#version 330 core
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
+in VS_OUT {
+    vec3 FragPos;
+    vec3 Norm;
+    vec2 TexCoords;
+} fs_in;
+uniform sampler2D boxTexture;
+struct Light {
+    vec3 Pos;
+    vec3 Color;
+};
+uniform Light lights[4];
+
+void main() {
+    const float gamma = 2.2;
+    vec3 tex_color = texture(boxTexture, fs_in.TexCoords).rgb;
+    vec3 ambient_color = .2 * tex_color;
+    vec3 diffuse_color = vec3(0.0);
+    for (int i = 0; i < 4; i ++){
+        vec3 lightDir = normalize(lights[i].Pos - fs_in.FragPos);
+        vec3 inner_diffuse_color = max(dot(lightDir, fs_in.Norm), 0.0) * lights[i].Color * tex_color;
+        float distance = length(lights[i].Pos - fs_in.FragPos);
+        inner_diffuse_color *= 1.0 / (distance * distance);
+        diffuse_color += inner_diffuse_color;
+    }
+    vec3 final_color = ambient_color + diffuse_color;
+    float brightness = dot(final_color, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        BrightColor = vec4(final_color, 1.0); // when it's greater than 1.0, consider it as bright color.
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0); // or discard it in BrightColor.
+    FragColor = vec4(final_color, 1.0);
+}

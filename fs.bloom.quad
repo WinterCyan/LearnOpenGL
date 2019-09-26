@@ -1,0 +1,15 @@
+#version 330 core
+in vec2 TexCoords;
+uniform sampler2D allColor;
+uniform sampler2D blurredColor;
+uniform float exposure;
+out vec4 FragColor;
+void main() {
+    const float gamma = 2.2;
+    vec3 all_color = texture(allColor, TexCoords).rgb;
+    vec3 light_color = texture(blurredColor, TexCoords).rgb;
+    vec3 final_color = all_color + light_color;
+    //final_color = vec3(1.0) - exp(-final_color * exposure);
+    final_color = pow(final_color, vec3(1.0/gamma));
+    FragColor = vec4(final_color, 1.0);
+}

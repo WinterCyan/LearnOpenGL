@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		2904016622CE186B0037AB3A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016522CE186B0037AB3A /* OpenGL.framework */; };
 		2904016822CE18760037AB3A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016722CE18760037AB3A /* libGLEW.2.1.0.dylib */; };
-		292008AA2338F12500999E29 /* bloom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 292008A92338F12500999E29 /* bloom.cpp */; };
 		292836F322E7079200745530 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F222E7079200745530 /* libglfw.3.3.dylib */; };
 		292836F522E7117300745530 /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F422E7117300745530 /* libassimp.5.0.0.dylib */; };
+		29A8C39D233CEB1E0077261C /* defer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29A8C39C233CEB1E0077261C /* defer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,6 +67,7 @@
 		2999CCC022E6FF8D00C65343 /* libassimpd.5.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimpd.5.0.0.dylib; path = ../assimp/build/code/Debug/libassimpd.5.0.0.dylib; sourceTree = "<group>"; };
 		299AB95622F8A3EB0005724B /* advancedGLSL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = advancedGLSL.cpp; sourceTree = "<group>"; };
 		299AB95822FA59C20005724B /* gs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gs.cpp; sourceTree = "<group>"; };
+		29A8C39C233CEB1E0077261C /* defer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = defer.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +137,7 @@
 				298A3533232FB42300B3AE24 /* normalMapping.cpp */,
 				298A35352334C3D400B3AE24 /* HDR.cpp */,
 				292008A92338F12500999E29 /* bloom.cpp */,
+				29A8C39C233CEB1E0077261C /* defer.cpp */,
 			);
 			path = OpenGL;
 			sourceTree = "<group>";
@@ -210,7 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				292008AA2338F12500999E29 /* bloom.cpp in Sources */,
+				29A8C39D233CEB1E0077261C /* defer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
