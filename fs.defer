@@ -1,0 +1,16 @@
+#version 330 core
+layout (location = 0) out vec3 gPos; // render to COLOR_ATTACHMENT0
+layout (location = 1) out vec3 gNorm; // render to COLOR_ATTACHMENT1
+layout (location = 2) out vec4 gAlbedo; // render to COLOR_ATTACHMENT2
+in vec2 TexCoords;
+in vec3 Norm;
+in vec3 FragPos;
+uniform sampler2D color_texture;
+uniform sampler2D specular_texture;
+
+void main() {
+    gAlbedo.rgb = texture(color_texture, TexCoords).rgb;
+    gAlbedo.a = texture(specular_texture, TexCoords).r;
+    gNorm = normalize(Norm);
+    gPos = FragPos;
+}

@@ -1,0 +1,13 @@
+#version 330 core
+in vec2 TexCoords;
+uniform sampler2D position_texture;
+uniform sampler2D normal_texture;
+uniform sampler2D albedo_texture;;
+out vec4 FragColor;
+void main() {
+    vec3 position = texture(position_texture, TexCoords).rgb;
+    vec3 normal = texture(normal_texture, TexCoords).rgb;
+    vec3 albedo = texture(albedo_texture, TexCoords).rgb;
+    float specular = texture(albedo_texture, TexCoords).a;
+    FragColor = vec4(all_color, 1.0);
+}

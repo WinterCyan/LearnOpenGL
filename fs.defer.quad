@@ -1,0 +1,8 @@
+#version 330 core
+in vec2 TexCoords;
+uniform sampler2D allColor;
+out vec4 FragColor;
+void main() {
+    vec3 all_color = texture(allColor, TexCoords).rgb;
+    FragColor = vec4(all_color, 1.0);
+}

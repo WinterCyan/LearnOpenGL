@@ -11,7 +11,7 @@
 		2904016822CE18760037AB3A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904016722CE18760037AB3A /* libGLEW.2.1.0.dylib */; };
 		292836F322E7079200745530 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F222E7079200745530 /* libglfw.3.3.dylib */; };
 		292836F522E7117300745530 /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 292836F422E7117300745530 /* libassimp.5.0.0.dylib */; };
-		29A8C39D233CEB1E0077261C /* defer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29A8C39C233CEB1E0077261C /* defer.cpp */; };
+		298927E523498ECB009166C8 /* defer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29A8C39C233CEB1E0077261C /* defer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -212,7 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29A8C39D233CEB1E0077261C /* defer.cpp in Sources */,
+				298927E523498ECB009166C8 /* defer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
