@@ -21,6 +21,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "params.h"
 
 #define WINDOW_NAME "Learn OpenGL"  // window's name
 #define WIDTH 1200
@@ -29,7 +30,8 @@
 using namespace std;
 
 unsigned int loadTexture(char const * path);
-void mouse_callback(GLFWwindow* win, double xpos, double ypos);
+void mouse_pos_callback(GLFWwindow* win, double xpos, double ypos);
+void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 void processInput(GLFWwindow* win);
 void scroll_callback(GLFWwindow* win, double xoffset, double yoffset);
 
@@ -57,23 +59,24 @@ int main(){
     }
     glfwMakeContextCurrent(win);
     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(win, mouse_callback);
+    glfwSetCursorPosCallback(win, mouse_pos_callback);
+    glfwSetMouseButtonCallback(win, mouse_button_callback);
     glfwSetScrollCallback(win, scroll_callback);
     glewExperimental = GL_TRUE;
     glewInit();
     glEnable(GL_DEPTH_TEST);
     
     MyShader floorShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.adli", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.adli", NULL);
-    MyShader shadowDepthShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shadow", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shadow", NULL);
-    MyShader shadowVisualShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shadowVisual", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shadowVisual", NULL);
-    MyShader shadowDrawShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.shadowdraw", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.shadowdraw", NULL);
+    MyShader shadowDepthShader(PROJECT_DIR"vs.shadow", PROJECT_DIR"fs.shadow", NULL);
+    MyShader shadowVisualShader(PROJECT_DIR"vs.shadowVisual", PROJECT_DIR"fs.shadowVisual", NULL);
+    MyShader shadowDrawShader(PROJECT_DIR"vs.shadowdraw", PROJECT_DIR"fs.shadowdraw", NULL);
     shadowVisualShader.use();
     shadowVisualShader.setInt("depthTex", 0);
     shadowDrawShader.use();
     shadowDrawShader.setInt("floor", 0);
     shadowDrawShader.setInt("depthTexture", 1);
     
-    unsigned int floorTex = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/floor.jpg");
+    unsigned int floorTex = loadTexture(PROJECT_DIR"floor.jpg");
     unsigned int cubeTex = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
     
     float floorVer[] = {
@@ -290,13 +293,13 @@ int main(){
     return 0;
 }
 
-void mouse_callback(GLFWwindow* win, double xpos, double ypos){
+void mouse_pos_callback(GLFWwindow* win, double xpos, double ypos) {
     if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
-    
+
     float xoffset = xpos - lastX;
     float yoffset = lastY - ypos;
     lastX = xpos;
@@ -305,10 +308,18 @@ void mouse_callback(GLFWwindow* win, double xpos, double ypos){
     myCamera.ProcessMouseMovement(xoffset, yoffset);
 }
 
+void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
+    if (glfwGetWindowAttrib(win, GLFW_HOVERED))
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+            glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 void processInput(GLFWwindow* win){
     if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(win, true);
-    
+    if (glfwGetKey(win, GLFW_KEY_E)==GLFW_PRESS)
+        glfwSetInputMode(win,GLFW_CURSOR,GLFW_CURSOR_NORMAL);
+
     if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
         myCamera.ProcessKeyboard(FORWARD, deltaTime);
     }

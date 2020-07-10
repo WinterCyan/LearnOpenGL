@@ -56,7 +56,7 @@ public:
     glm::mat4 getViewMatrix(){
         return glm::lookAt(Position, Position+Front, Up);
     }
-    void ProcessKeyboard(camera_movement direction, float deltaTime, float speed){
+    void ProcessKeyboard(camera_movement direction, float deltaTime, float speed=SPEED){
         float velocity = MovementSpeed * deltaTime * speed;
         if (direction == FORWARD) {
             Position += Front*velocity;

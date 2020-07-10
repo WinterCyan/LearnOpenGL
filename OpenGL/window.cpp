@@ -5,6 +5,7 @@
 //  Created by Winter Cyan on 2019/7/1.
 //  Copyright © 2019 Winter Cyan. All rights reserved.
 //
+//#include <glad/glad.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
@@ -13,7 +14,7 @@
 //    glViewport(0,0,width, height);
 //}
 
-int window(){
+int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

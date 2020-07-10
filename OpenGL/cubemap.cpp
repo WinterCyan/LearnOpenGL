@@ -20,6 +20,7 @@
 #include "MyCamera.h"
 #include <vector>
 #include "Model.h"
+#include "params.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
@@ -62,11 +63,11 @@ int main(){
     
     glEnable(GL_DEPTH_TEST);
     
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.reflect", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.reflect");
+    MyShader shader = MyShader(PROJECT_DIR"vs.reflect", PROJECT_DIR"fs.reflect",NULL);
     
-    MyShader skyboxShader = MyShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/vs.cube", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/fs.cube");
-    
-    MyShader modelShader("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/modelvs", "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/modelfs");
+    MyShader skyboxShader = MyShader(PROJECT_DIR"vs.cube", PROJECT_DIR"fs.cube",NULL);
+
+    MyShader modelShader(PROJECT_DIR"modelvs", PROJECT_DIR"modelfs",NULL);
     
     float cubeVertices[] = {
         // positions          // normals
@@ -158,19 +159,19 @@ int main(){
     };
     
     unsigned int texture1;
-    texture1 = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/container.jpg");
+    texture1 = loadTexture(PROJECT_DIR"container.jpg");
     
     vector<const char*> faces = {
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/right.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/left.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/top.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/bottom.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/back.jpg",
-        "/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/faces/front.jpg"
+        PROJECT_DIR"faces/right.jpg",
+        PROJECT_DIR"faces/left.jpg",
+        PROJECT_DIR"faces/top.jpg",
+        PROJECT_DIR"faces/bottom.jpg",
+        PROJECT_DIR"faces/back.jpg",
+        PROJECT_DIR"faces/front.jpg"
     };
     unsigned int cubeMap = loadCubemap(faces);
     
-    Model my_model("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/nanosuit_reflection/nanosuit.obj");
+    Model my_model(PROJECT_DIR"nanosuit_reflection/nanosuit.obj");
 
     
     // cube
