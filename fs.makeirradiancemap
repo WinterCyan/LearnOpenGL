@@ -1,0 +1,26 @@
+#version 330 core
+in vec3 localPos;
+out vec4 FragColor;
+uniform samplerCube envCubeMap;
+
+const float delta = 0.025;
+const float PI = 3.14159265359;
+
+void main() {
+    int N1N2 = 0;
+    vec3 up = vec3(0.0,1.0,0.0);
+    vec3 normal = normalize(localPos);
+    vec3 right = cross(up,normal);
+    up = cross(normal, right);
+    vec3 irradiance = vec3(0.0);
+    for (float theta = 0.0; theta < PI/2.0; theta += delta) {
+        for (float phi = 0.0; phi < 2.0*PI; phi += delta) {
+            vec3 tangentVec = vec3(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta));
+            vec3 sampleVec = tangentVec.x*right + tangentVec.y*up + tangentVec.z*normal;
+            irradiance += texture(envCubeMap,sampleVec).rgb*cos(theta)*sin(theta);
+            N1N2 ++;
+        }
+    }
+    irradiance = PI*irradiance*(1.0/float(N1N2));
+    FragColor = vec4(irradiance,1.0);
+}
