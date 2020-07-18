@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/learnopengl.dir/BRDF.cpp.o  -o learnopengl  -lGL -lGLU -lGLEW -lglfw3 -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor -lassimp 
