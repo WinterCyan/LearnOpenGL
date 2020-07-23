@@ -48,6 +48,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/MODEL.dir/DependInfo.cmake"
+  "CMakeFiles/IBLBUG.dir/DependInfo.cmake"
   "CMakeFiles/IBL.dir/DependInfo.cmake"
   "CMakeFiles/BRDF.dir/DependInfo.cmake"
   )

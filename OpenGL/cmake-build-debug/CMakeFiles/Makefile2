@@ -53,6 +53,8 @@ CMAKE_BINARY_DIR = /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-de
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/MODEL.dir/all
+all: CMakeFiles/IBLBUG.dir/all
 all: CMakeFiles/IBL.dir/all
 all: CMakeFiles/BRDF.dir/all
 
@@ -64,10 +66,66 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/MODEL.dir/clean
+clean: CMakeFiles/IBLBUG.dir/clean
 clean: CMakeFiles/IBL.dir/clean
 clean: CMakeFiles/BRDF.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/MODEL.dir
+
+# All Build rule for target.
+CMakeFiles/MODEL.dir/all:
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/depend
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles --progress-num=7,8 "Built target MODEL"
+.PHONY : CMakeFiles/MODEL.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/MODEL.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/MODEL.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/MODEL.dir/rule
+
+# Convenience name for target.
+MODEL: CMakeFiles/MODEL.dir/rule
+
+.PHONY : MODEL
+
+# clean rule for target.
+CMakeFiles/MODEL.dir/clean:
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/clean
+.PHONY : CMakeFiles/MODEL.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/IBLBUG.dir
+
+# All Build rule for target.
+CMakeFiles/IBLBUG.dir/all:
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/depend
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles --progress-num=5,6 "Built target IBLBUG"
+.PHONY : CMakeFiles/IBLBUG.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/IBLBUG.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/IBLBUG.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/IBLBUG.dir/rule
+
+# Convenience name for target.
+IBLBUG: CMakeFiles/IBLBUG.dir/rule
+
+.PHONY : IBLBUG
+
+# clean rule for target.
+CMakeFiles/IBLBUG.dir/clean:
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/clean
+.PHONY : CMakeFiles/IBLBUG.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/IBL.dir

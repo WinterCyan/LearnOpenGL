@@ -15,8 +15,8 @@
 #include "MyCamera.h"
 #include "Model.h"
 
-#define WIDTH 2560
-#define HEIGHT 1440
+#define WIDTH 3840
+#define HEIGHT 2160
 #define CUBEMAP_SIZE 2560
 #define IRRADIANCEMAP_SIZE 128
 #define PREFILTEREDMAP_BASE_SIZE 1024
@@ -33,7 +33,8 @@ void processInput(GLFWwindow* win);
 void scroll_callback(GLFWwindow* win, double xoffset, double yoffset);
 void renderCube(float A);
 void renderSphere(float R);
-void renderQuad();
+void renderQuad(float A);
+glm::vec3 hexColorToFloat(int hexValue);
 
 float deltaTime = 0.f;
 float lastFrame = 0.f;
@@ -114,50 +115,12 @@ void scroll_callback(GLFWwindow* win, double xoffset, double yoffset){
     camera.ProcessMouseScroll(yoffset);
 }
 
-unsigned int loadTexture(char const * path, bool gammaCorrection){
+unsigned int loadTexture(char const * path, bool gammaCorrection) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
-
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        GLenum internalFormat;
-        GLenum dataFormat;
-        if (nrComponents == 1)
-        {
-            internalFormat = dataFormat = GL_RED;
-        }
-        else if (nrComponents == 3)
-        {
-            internalFormat = gammaCorrection ? GL_SRGB : GL_RGB;
-            dataFormat = GL_RGB;
-        }
-        else if (nrComponents == 4)
-        {
-            internalFormat = gammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
-            dataFormat = GL_RGBA;
-        }
-
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
-
     return textureID;
 }
+
 
 unsigned int loadHDRTexture(char const * path) {
     unsigned int hdrTexture;
@@ -254,17 +217,17 @@ void renderCube(float A){
     glBindVertexArray(0);
 }
 
-void renderQuad(){
+void renderQuad(float A){
     unsigned int quadVAO = 0;
     unsigned int quadVBO;
     if (quadVAO == 0)
     {
         float quadVertices[] = {
                 // positions        // texture Coords
-                -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                -A,  A, 0.0f, 0.0f, 1.0f,
+                -A, -A, 0.0f, 0.0f, 0.0f,
+                A,  A, 0.0f, 1.0f, 1.0f,
+                A, -A, 0.0f, 1.0f, 0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
@@ -382,6 +345,16 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+glm::vec3 hexColorToFloat(int hexValue)
+{
+    glm::vec3 rgbColor;
+    rgbColor.r = ((hexValue >> 16) & 0xFF) / 255.0;  // Extract the RR byte
+    rgbColor.g = ((hexValue >> 8) & 0xFF) / 255.0;   // Extract the GG byte
+    rgbColor.b = ((hexValue) & 0xFF) / 255.0;        // Extract the BB byte
+
+    return rgbColor;
 }
 
 #endif //LEARNOPENGL_TOOLKIT_H

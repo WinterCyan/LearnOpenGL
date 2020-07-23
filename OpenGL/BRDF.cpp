@@ -15,10 +15,12 @@
 
 using namespace std;
 
-void renderBRDFSphere(MyShader pbrShader, glm::vec3 albedo, float metallic, float roughness, float ao, glm::mat4 model);
+void renderBRDFSphere(MyShader pbrShader, glm::vec3 albedo, glm::vec3 F0, float metallic, float roughness, float ao, glm::mat4 model);
+void renderPalette(MyShader paletteShader, glm::vec3 color, glm::mat4 model);
 
 int main()
 {
+//    cout<<"color from #262626: "<<hexColorToFloat(0x262626).r<<" "<<hexColorToFloat(0x262626).g<<" "<<hexColorToFloat(0x262626).b<<endl;
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -62,20 +64,38 @@ int main()
     // build and compile shaders
     // -------------------------
     MyShader pbrShader(PROJECT_DIR"2.2.1.pbr.vs.glsl", PROJECT_DIR"brdf.fs.glsl",NULL);
+    MyShader paletteShader(PROJECT_DIR"brdf.palette.vs.glsl", PROJECT_DIR"brdf.palette.fs.glsl",NULL);
 
-    // lights
+    // light
     // ------
-    glm::vec3 lightPositions[] = {
-            glm::vec3(-10.0f,  10.0f, 10.0f),
-            glm::vec3( 10.0f,  10.0f, 10.0f),
-            glm::vec3(-10.0f, -10.0f, 10.0f),
-            glm::vec3( 10.0f, -10.0f, 10.0f),
+    glm::vec3 lightPosition = glm::vec3(-10.0f,  10.0f, 10.0f);
+    glm::vec3 lightColor = glm::vec3(2800.0f, 2800.0f, 2800.0f);
+
+    // materials properties
+    // ------------
+    glm::vec3 F0_array[10] = {
+            glm::vec3(0.02, 0.02, 0.02),
+            glm::vec3(0.03, 0.03, 0.03),
+            glm::vec3(0.05, 0.05, 0.05),
+            glm::vec3(0.08, 0.08, 0.08),
+            glm::vec3(0.17, 0.17, 0.17),
+            glm::vec3(0.56, 0.57, 0.58),
+            glm::vec3(0.95, 0.64, 0.54),
+            glm::vec3(1.00, 0.71, 0.29),
+            glm::vec3(0.91, 0.92, 0.92),
+            glm::vec3(0.95, 0.93, 0.88)
     };
-    glm::vec3 lightColors[] = {
-            glm::vec3(300.0f, 300.0f, 300.0f),
-            glm::vec3(300.0f, 300.0f, 300.0f),
-            glm::vec3(300.0f, 300.0f, 300.0f),
-            glm::vec3(300.0f, 300.0f, 300.0f)
+    int albedo_array[10] = {
+            0x262626,
+            0x363636,
+            0x3d3d3d,
+            0x4f4f4f,
+            0x737373,
+            0xc6c8c8,
+            0xf4d4c5,
+            0xf9de9a,
+            0xf6f6f8,
+            0xfaf8f3
     };
 
     // initialize static shader uniforms before rendering
@@ -83,6 +103,8 @@ int main()
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     pbrShader.use();
     pbrShader.setMat4("projection", projection);
+    paletteShader.use();
+    paletteShader.setMat4("projection", projection);
 
     // render loop
     // -----------
@@ -105,48 +127,38 @@ int main()
 
         // render scene, supplying the convoluted irradiance map to the final shader.
         // ------------------------------------------------------------------------------------------
-        pbrShader.use();
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 model = glm::mat4(1.0f);
+        paletteShader.use();
+        paletteShader.setMat4("view", view);
+        pbrShader.use();
         pbrShader.setMat4("view", view);
         pbrShader.setVec3("camPos", camera.Position);
-//        renderBRDFSphere(pbrShader, glm::vec3(.5f,.0f,.0f),.9,.1,1.0,model);
-        int nrRows = 7;
-        int nrColumns = 7;
-        float spacing = 2.5;
-        for (int row = 0; row < nrRows; ++row)
-        {
-            pbrShader.setFloat("metallic", (float)row / (float)nrRows);
-            for (int col = 0; col < nrColumns; ++col)
-            {
-                // we clamp the roughness to 0.025 - 1.0 as perfectly smooth surfaces (roughness of 0.0) tend to look a bit off
-                // on direct lighting.
-                pbrShader.setFloat("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
-
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(
-                        (float)(col - (nrColumns / 2)) * spacing,
-                        (float)(row - (nrRows / 2)) * spacing,
-                        -2.0f
-                ));
-                pbrShader.setMat4("model", model);
-                renderSphere(1.f);
-            }
+        glm::vec3 albedo = hexColorToFloat(0xf6f6f8);
+        glm::vec3 F0 = glm::vec3(0.91, 0.92, 0.92);
+        float metallic = .7;
+        float roughness = .7;
+        float ao = 1.f;
+        for (int i = 0; i < 10; ++i) {
+            model = glm::mat4(1.f);
+            model = glm::translate(model, glm::vec3(2.5f*(i-5),0.f,0.f));
+            renderBRDFSphere(pbrShader, hexColorToFloat(albedo_array[i]), F0_array[i], metallic,roughness,ao,model);
+            model = glm::translate(model, glm::vec3(0.f,2.f,0.f));
+            model = glm::scale(model, glm::vec3(.7f));
+            renderPalette(paletteShader,hexColorToFloat(albedo_array[i]),model);
+            model = glm::translate(model, glm::vec3(0.f,-6.f,0.f));
+            renderPalette(paletteShader,F0_array[i],model);
         }
 
-        for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
-        {
-            glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
-            newPos = lightPositions[i];
-            pbrShader.setVec3("lightPositions[" + to_string(i) + "]", newPos);
-            pbrShader.setVec3("lightColors[" + to_string(i) + "]", lightColors[i]);
-
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, newPos);
-            model = glm::scale(model, glm::vec3(0.5f));
-            pbrShader.setMat4("model", model);
-            renderSphere(1.f);
-        }
+        // render light-source as a sphere
+        pbrShader.use();
+        pbrShader.setVec3("lightPosition", lightPosition);
+        pbrShader.setVec3("lightColor", lightColor);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPosition);
+        model = glm::scale(model, glm::vec3(0.5f));
+        pbrShader.setMat4("model", model);
+        renderSphere(1.f);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -155,14 +167,20 @@ int main()
     return 0;
 }
 
-void renderBRDFSphere(MyShader pbrShader, glm::vec3 albedo, float metallic, float roughness, float ao, glm::mat4 model) {
+void renderBRDFSphere(MyShader pbrShader, glm::vec3 albedo, glm::vec3 F0, float metallic, float roughness, float ao, glm::mat4 model) {
     pbrShader.use();
     pbrShader.setVec3("albedo", albedo);
+    pbrShader.setVec3("f0", F0);
     pbrShader.setFloat("metallic", metallic);
     pbrShader.setFloat("roughness", roughness);
     pbrShader.setFloat("ao",ao);
     pbrShader.setMat4("model", model);
     renderSphere(1.0);
 }
-
+void renderPalette(MyShader paletteShader, glm::vec3 color, glm::mat4 model) {
+    paletteShader.use();
+    paletteShader.setMat4("model", model);
+    paletteShader.setVec3("color", color);
+    renderQuad(1.f);
+}
 

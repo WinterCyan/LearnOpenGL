@@ -65,6 +65,7 @@ int main()
     // build and compile shaders
     // -------------------------
     MyShader pbrShader(PROJECT_DIR"2.2.1.pbr.vs.glsl", PROJECT_DIR"2.2.1.pbr.fs.glsl",NULL);
+    MyShader pbrModelShader(PROJECT_DIR"2.2.1.pbr.vs.glsl", PROJECT_DIR"2.2.1.pbr.fs.withtexture.glsl",NULL);
     MyShader equirectangularToCubemapShader(PROJECT_DIR"2.2.1.cubemap.vs.glsl", PROJECT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl",NULL);
     MyShader irradianceShader(PROJECT_DIR"2.2.1.cubemap.vs.glsl", PROJECT_DIR"2.2.1.irradiance_convolution.fs.glsl",NULL);
     MyShader prefilterShader(PROJECT_DIR"2.2.1.cubemap.vs.glsl", PROJECT_DIR"2.2.1.prefilter.fs.glsl",NULL);
@@ -77,6 +78,13 @@ int main()
     pbrShader.setInt("brdfLUT", 2);
     pbrShader.setVec3("albedo", 198.f/255.f, 200.f/255.f, 200.f/255.f);
     pbrShader.setFloat("ao", 1.0f);
+
+    pbrModelShader.use();
+    pbrModelShader.setInt("irradianceMap", 0);
+    pbrModelShader.setInt("prefilterMap", 1);
+    pbrModelShader.setInt("brdfLUT", 2);
+//    pbrModelShader.setVec3("albedo", 198.f/255.f, 200.f/255.f, 200.f/255.f);
+    pbrModelShader.setFloat("ao", 1.0f);
 
     backgroundShader.use();
     backgroundShader.setInt("environmentMap", 0);
@@ -114,7 +122,11 @@ int main()
 
     // pbr: load the HDR environment map
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(PROJECT_DIR"pbrtex/lobby.hdr");
+    unsigned int hdrTexture = loadHDRTexture(PROJECT_DIR"pbrtex/ladowntown.hdr");
+
+    // model: load obj file as model
+    // ---------------------------------
+    Model objModel(PROJECT_DIR"capsule/capsule.obj");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------
@@ -279,7 +291,7 @@ int main()
     glViewport(0, 0, BRDFLUT_SIZE, BRDFLUT_SIZE);
     brdfShader.use();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    renderQuad();
+    renderQuad(1.f);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -334,10 +346,12 @@ int main()
 
         // render rows*column number of spheres with material properties defined by textures (they all have the same material properties)
         glm::mat4 model = glm::mat4(1.0f);
-        for (int row = 0; row < nrRows; ++row)
+        //for (int row = 0; row < nrRows; ++row)
+        for (int row = 6; row < 7; ++row)
         {
             pbrShader.setFloat("metallic", (float)row / (float)nrRows);
-            for (int col = 0; col < nrColumns; ++col)
+            //for (int col = 0; col < nrColumns; ++col)
+            for (int col = 0; col < 1; ++col)
             {
                 // we clamp the roughness to 0.025 - 1.0 as perfectly smooth surfaces (roughness of 0.0) tend to look a bit off
                 // on direct lighting.
@@ -354,6 +368,10 @@ int main()
             }
         }
 
+        pbrShader.setFloat("metallic", .7);
+        pbrShader.setFloat("roughness", .7);
+        objModel.Draw(pbrShader);
+
 
         // render light source (simply re-render sphere at light positions)
         // this looks a bit off as we use the same shader, but it'll make their positions obvious and
@@ -369,22 +387,23 @@ int main()
             model = glm::translate(model, newPos);
             model = glm::scale(model, glm::vec3(0.5f));
             pbrShader.setMat4("model", model);
-            renderSphere(1.f);
-        }
+                renderSphere(1.f);
+            }
 
         // render skybox (render as last to prevent overdraw)
         backgroundShader.use();
         backgroundShader.setMat4("view", view);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-        //glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
-        //glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
         renderCube(1.f);
 
 
         // render BRDF map to screen
-        //brdfShader.Use();
-        //renderQuad();
+//        glViewport(0,0,BRDFLUT_SIZE,BRDFLUT_SIZE);
+//        brdfShader.use();
+//        renderQuad(1.f);
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

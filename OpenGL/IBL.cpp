@@ -94,7 +94,7 @@ int main() {
 //    unsigned int metallicTex = loadTexture(PROJECT_DIR"pbrtex/metallic.png",false);
 //    unsigned int normalTex = loadTexture(PROJECT_DIR"pbrtex/normal.png",false);
 //    unsigned int roughnessTex = loadTexture(PROJECT_DIR"pbrtex/roughness.png",false);
-    unsigned int hdrTex = loadHDRTexture(PROJECT_DIR"pbrtex/lobby.hdr");
+    unsigned int hdrTex = loadHDRTexture(PROJECT_DIR"pbrtex/ladowntown.hdr");
 
     // create frame_buffer & render_buffer
     unsigned int fbo, rbo;
@@ -240,7 +240,7 @@ int main() {
     glViewport(0, 0,BRDFLUT_SIZE,BRDFLUT_SIZE);
     brdfLUTShader.use();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    renderQuad();
+    renderQuad(1.f);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     int screenW, screenH;
@@ -261,12 +261,12 @@ int main() {
         auto model = glm::mat4(1.f);
 
         // render cubeMap cube
-//        cubeMapShader.use();
-//        cubeMapShader.setMat4("projection", projection);
-//        cubeMapShader.setMat4("view", view);
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, prefilteredMap);
-//        renderCube(3.f);
+        cubeMapShader.use();
+        cubeMapShader.setMat4("projection", projection);
+        cubeMapShader.setMat4("view", view);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, irradianceMap);
+        renderCube(3.f);
 
         // render sphere without texture
         pbrShader.use();
@@ -287,24 +287,24 @@ int main() {
 //        glBindTexture(GL_TEXTURE_2D, roughnessTex);
 //        glActiveTexture(GL_TEXTURE3);
 //        glBindTexture(GL_TEXTURE_2D, normalTex);
-        for (int row = 0; row < rowSize; row++) {
-            pbrShader.setFloat("metallic", (float)row / (float)rowSize);
-            for (int col = 0; col < colSize; col++) {
-                pbrShader.setFloat("roughness", glm::clamp((float)col / (float)colSize, 0.05f, 1.0f));
-                model = glm::mat4(1.f);
-                model = glm::translate(model, glm::vec3(((float)col-colSize/2.0)*spacing,((float)row-rowSize/2.0)*spacing,0));
-                pbrShader.setMat4("model", model);
-                renderSphere(.2f);
-            }
-        }
+//        for (int row = 0; row < rowSize; row++) {
+//            pbrShader.setFloat("metallic", (float)row / (float)rowSize);
+//            for (int col = 0; col < colSize; col++) {
+//                pbrShader.setFloat("roughness", glm::clamp((float)col / (float)colSize, 0.05f, 1.0f));
+//                model = glm::mat4(1.f);
+//                model = glm::translate(model, glm::vec3(((float)col-colSize/2.0)*spacing,((float)row-rowSize/2.0)*spacing,0));
+//                pbrShader.setMat4("model", model);
+//                renderSphere(.2f);
+//            }
+//        }
 
         // render background
-        skyboxShader.use();
-        skyboxShader.setMat4("projection",projection);
-        skyboxShader.setMat4("view", view);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubeMap);
-        renderCube(1.f);
+//        skyboxShader.use();
+//        skyboxShader.setMat4("projection",projection);
+//        skyboxShader.setMat4("view", view);
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubeMap);
+//        renderCube(1.f);
 
         // render brdfLUT
 //        glViewport(0, 0,BRDFLUT_SIZE,BRDFLUT_SIZE);

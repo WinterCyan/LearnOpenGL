@@ -5,3 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(BRDF BRDF.cpp)
 add_executable(IBL IBLCopy.cpp)
+add_executable(IBLBUG IBL.cpp)
+add_executable(MODEL model.cpp)
+

@@ -111,6 +111,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named MODEL
+
+# Build rule for target.
+MODEL: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MODEL
+.PHONY : MODEL
+
+# fast build rule for target.
+MODEL/fast:
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/build
+.PHONY : MODEL/fast
+
+#=============================================================================
+# Target rules for targets named IBLBUG
+
+# Build rule for target.
+IBLBUG: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 IBLBUG
+.PHONY : IBLBUG
+
+# fast build rule for target.
+IBLBUG/fast:
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/build
+.PHONY : IBLBUG/fast
+
+#=============================================================================
 # Target rules for targets named IBL
 
 # Build rule for target.
@@ -163,6 +189,33 @@ BRDF.cpp.s:
 	$(MAKE) -f CMakeFiles/BRDF.dir/build.make CMakeFiles/BRDF.dir/BRDF.cpp.s
 .PHONY : BRDF.cpp.s
 
+IBL.o: IBL.cpp.o
+
+.PHONY : IBL.o
+
+# target to build an object file
+IBL.cpp.o:
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/IBL.cpp.o
+.PHONY : IBL.cpp.o
+
+IBL.i: IBL.cpp.i
+
+.PHONY : IBL.i
+
+# target to preprocess a source file
+IBL.cpp.i:
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/IBL.cpp.i
+.PHONY : IBL.cpp.i
+
+IBL.s: IBL.cpp.s
+
+.PHONY : IBL.s
+
+# target to generate assembly for a file
+IBL.cpp.s:
+	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/IBL.cpp.s
+.PHONY : IBL.cpp.s
+
 IBLCopy.o: IBLCopy.cpp.o
 
 .PHONY : IBLCopy.o
@@ -190,6 +243,33 @@ IBLCopy.cpp.s:
 	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBLCopy.cpp.s
 .PHONY : IBLCopy.cpp.s
 
+model.o: model.cpp.o
+
+.PHONY : model.o
+
+# target to build an object file
+model.cpp.o:
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/model.cpp.o
+.PHONY : model.cpp.o
+
+model.i: model.cpp.i
+
+.PHONY : model.i
+
+# target to preprocess a source file
+model.cpp.i:
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/model.cpp.i
+.PHONY : model.cpp.i
+
+model.s: model.cpp.s
+
+.PHONY : model.s
+
+# target to generate assembly for a file
+model.cpp.s:
+	$(MAKE) -f CMakeFiles/MODEL.dir/build.make CMakeFiles/MODEL.dir/model.cpp.s
+.PHONY : model.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -198,14 +278,22 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... MODEL"
+	@echo "... IBLBUG"
 	@echo "... IBL"
 	@echo "... BRDF"
 	@echo "... BRDF.o"
 	@echo "... BRDF.i"
 	@echo "... BRDF.s"
+	@echo "... IBL.o"
+	@echo "... IBL.i"
+	@echo "... IBL.s"
 	@echo "... IBLCopy.o"
 	@echo "... IBLCopy.i"
 	@echo "... IBLCopy.s"
+	@echo "... model.o"
+	@echo "... model.i"
+	@echo "... model.s"
 .PHONY : help
 
 
