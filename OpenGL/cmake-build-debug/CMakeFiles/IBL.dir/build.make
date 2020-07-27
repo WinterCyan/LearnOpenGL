@@ -57,27 +57,27 @@ include CMakeFiles/IBL.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/IBL.dir/flags.make
 
-CMakeFiles/IBL.dir/IBLCopy.cpp.o: CMakeFiles/IBL.dir/flags.make
-CMakeFiles/IBL.dir/IBLCopy.cpp.o: ../IBLCopy.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/IBL.dir/IBLCopy.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IBL.dir/IBLCopy.cpp.o -c /home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBLCopy.cpp
+CMakeFiles/IBL.dir/IBL.cpp.o: CMakeFiles/IBL.dir/flags.make
+CMakeFiles/IBL.dir/IBL.cpp.o: ../IBL.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/IBL.dir/IBL.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IBL.dir/IBL.cpp.o -c /home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBL.cpp
 
-CMakeFiles/IBL.dir/IBLCopy.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IBL.dir/IBLCopy.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBLCopy.cpp > CMakeFiles/IBL.dir/IBLCopy.cpp.i
+CMakeFiles/IBL.dir/IBL.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IBL.dir/IBL.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBL.cpp > CMakeFiles/IBL.dir/IBL.cpp.i
 
-CMakeFiles/IBL.dir/IBLCopy.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IBL.dir/IBLCopy.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBLCopy.cpp -o CMakeFiles/IBL.dir/IBLCopy.cpp.s
+CMakeFiles/IBL.dir/IBL.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IBL.dir/IBL.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBL.cpp -o CMakeFiles/IBL.dir/IBL.cpp.s
 
 # Object files for target IBL
 IBL_OBJECTS = \
-"CMakeFiles/IBL.dir/IBLCopy.cpp.o"
+"CMakeFiles/IBL.dir/IBL.cpp.o"
 
 # External object files for target IBL
 IBL_EXTERNAL_OBJECTS =
 
-IBL: CMakeFiles/IBL.dir/IBLCopy.cpp.o
+IBL: CMakeFiles/IBL.dir/IBL.cpp.o
 IBL: CMakeFiles/IBL.dir/build.make
 IBL: CMakeFiles/IBL.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable IBL"

@@ -5,23 +5,23 @@ in vec3 WorldPos;
 in vec3 Normal;
 
 // material parameters
-uniform vec3 albedo;
-uniform float metallic;
-uniform float roughness;
+//uniform vec3 albedo;
+//uniform float metallic;
+//uniform float roughness;
 uniform float ao;
+
+// IBL, certain number(3)
+uniform samplerCube irradianceMap; // 0
+uniform samplerCube prefilterMap; // 1
+uniform sampler2D brdfLUT; // 2
 
 // material params with textures
 //uniform sampler2D albedoMap;
-uniform sampler2D texture_diffuse1;
-//uniform sampler2D normalMap;
-//uniform sampler2D metallicMap;
-//uniform sampler2D roughnessMap;
+uniform sampler2D aiTextureType_DIFFUSE1; // 4
+uniform sampler2D normalMap; // 5
+uniform sampler2D metallicMap; // 6
+uniform sampler2D roughnessMap; // 7
 //uniform sampler2D aoMap;
-
-// IBL
-uniform samplerCube irradianceMap;
-uniform samplerCube prefilterMap;
-uniform sampler2D brdfLUT;
 
 // lights
 uniform vec3 lightPositions[4];
@@ -99,12 +99,12 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 // ----------------------------------------------------------------------------
 void main()
 {
-    vec3 albedo = pow(texture(texture_diffuse1,TexCoords).rgb,vec3(2.2));
-//    float metallic = texture(metallicMap,TexCoords).r;
-//    float roughness = texture(roughnessMap,TexCoords).r;
+    vec3 albedo = pow(texture(aiTextureType_DIFFUSE1,TexCoords).rgb,vec3(2.2));
+    float metallic = texture(metallicMap,TexCoords).r;
+    float roughness = texture(roughnessMap,TexCoords).r;
 //    float ao = texture(aoMap,TexCoords).r;
-    vec3 N = Normal;
-//    vec3 N = getNormalFromMap();
+//    vec3 N = Normal;
+    vec3 N = getNormalFromMap();
     vec3 V = normalize(camPos - WorldPos);
     vec3 R = reflect(-V, N);
 
@@ -159,7 +159,7 @@ void main()
     kD *= 1.0 - metallic;
 
     vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuse      = irradiance * albedo;
+    vec3 diffuse = irradiance * albedo;
 
     // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
     const float MAX_REFLECTION_LOD = 4.0;
@@ -179,4 +179,5 @@ void main()
     color = pow(color, vec3(1.0/2.2));
 
     FragColor = vec4(color , 1.0);
+//    FragColor = vec4(albedo , 1.0);
 }

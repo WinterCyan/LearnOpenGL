@@ -50,29 +50,43 @@ public:
     }
     void Draw(MyShader shader){
         // index of two different kind of texture
-        unsigned int diffuseNum = 1;
-        unsigned int specularNum = 1;
-        unsigned int ambientNum = 1;
-        unsigned int normalNum = 1;
-        unsigned int heightNum = 1;
+        unsigned int DIFFUSE_NUM = 1;
+        unsigned int SPECULAR_NUM = 1;
+        unsigned int AMBIENT_NUM = 1;
+        unsigned int NORMALS_NUM = 1;
+        unsigned int BASE_COLOR_NUM = 1;
+        unsigned int NORMAL_CAMERA_NUM = 1;
+        unsigned int METALNESS_NUM = 1;
+        unsigned int ROUGHNESS_NUM = 1;
+        unsigned int AO_NUM = 1;
         for (int i = 0; i < textures.size(); i ++) {
             glActiveTexture(GL_TEXTURE0 + i);
             string tex_number;  // index number in string
             string tex_type = textures[i].type;
-            if (tex_type == "texture_diffuse")
-                tex_number = to_string(diffuseNum++);
-            else if (tex_type == "texture_specular")
-                tex_number = to_string(specularNum++);
-            else if (tex_type == "texture_normal")
-                tex_number = to_string(normalNum++);
-            else if (tex_type == "texture_height")
-                tex_number = to_string(heightNum++);
-            else if (tex_type == "texture_ambient")
-                tex_number = to_string(ambientNum++);
-            
+            if (tex_type == "aiTextureType_DIFFUSE")
+                tex_number = to_string(DIFFUSE_NUM++);
+            else if (tex_type == "aiTextureType_SPECULAR")
+                tex_number = to_string(SPECULAR_NUM++);
+            else if (tex_type == "aiTextureType_AMBIENT")
+                tex_number = to_string(AMBIENT_NUM++);
+            else if (tex_type == "aiTextureType_NORMALS")
+                tex_number = to_string(NORMALS_NUM++);
+            else if (tex_type == "aiTextureType_BASE_COLOR")
+                tex_number = to_string(BASE_COLOR_NUM++);
+            else if (tex_type == "aiTextureType_NORMAL_CAMERA")
+                tex_number = to_string(NORMAL_CAMERA_NUM++);
+            else if (tex_type == "aiTextureType_METALNESS")
+                tex_number = to_string(METALNESS_NUM++);
+            else if (tex_type == "aiTextureType_DIFFUSE_ROUGHNESS")
+                tex_number = to_string(ROUGHNESS_NUM++);
+            else if (tex_type == "aiTextureType_AMBIENT_OCCLUSION")
+                tex_number = to_string(AO_NUM++);
+
             // set int value for different texture
-            glUniform1i(glGetUniformLocation(shader.ID, (tex_type + tex_number).c_str()), i);
+            //std::cout<<"setup texture name: "<<(tex_type + tex_number).c_str()<<" as "<<i+3<<std::endl;
+            glUniform1i(glGetUniformLocation(shader.ID, (tex_type + tex_number).c_str()), i+3); // consider sampler count or not
             //shader.setFloat("material." + tex_type + tex_number, i);    // in one iteration, GL_TEXTURE-i is activated, and meanwhile, e.g., texture_diffuse1 is i, the shader(texture_diffuse1) and program(texture1) is linked with GL_TEXTURE-i
+            glActiveTexture(GL_TEXTURE0+i+3);
             glBindTexture(GL_TEXTURE_2D, textures[i].id);   // texture data is stored in texture[i], specified with id, data will be transfered to GL_TEXTURE-i
         }
         

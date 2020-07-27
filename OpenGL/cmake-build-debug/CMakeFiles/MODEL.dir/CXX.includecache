@@ -77,26 +77,14 @@ glm/glm.hpp
 -
 glm/gtc/matrix_transform.hpp
 -
-glm/gtc/type_ptr.hpp
--
 GL/glew.h
 -
 GLFW/glfw3.h
 -
 iostream
 -
-cmath
--
-unistd.h
--
 MyShader.h
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/MyShader.h
-cmath
--
-MyCamera.h
-/home/wintercyan/code/clion/LearnOpenGL/OpenGL/MyCamera.h
-Model.h
-/home/wintercyan/code/clion/LearnOpenGL/OpenGL/Model.h
 toolkit.h
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/toolkit.h
 

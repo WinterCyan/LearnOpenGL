@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBLCopy.cpp
+/home/wintercyan/code/clion/LearnOpenGL/OpenGL/IBL.cpp
 GL/glew.h
 -
 GLFW/glfw3.h
@@ -19,8 +19,6 @@ iostream
 -
 MyShader.h
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/MyShader.h
-Model.h
-/home/wintercyan/code/clion/LearnOpenGL/OpenGL/Model.h
 toolkit.h
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/toolkit.h
 

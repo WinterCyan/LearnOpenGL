@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/IBL.dir/IBLCopy.cpp.o  -o IBL  -lGL -lGLU -lGLEW -lglfw3 -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor -lassimp 
+/usr/bin/c++  -g   CMakeFiles/IBL.dir/IBL.cpp.o  -o IBL  -lGL -lGLU -lGLEW -lglfw3 -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor -lassimp 

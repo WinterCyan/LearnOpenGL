@@ -124,19 +124,6 @@ MODEL/fast:
 .PHONY : MODEL/fast
 
 #=============================================================================
-# Target rules for targets named IBLBUG
-
-# Build rule for target.
-IBLBUG: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 IBLBUG
-.PHONY : IBLBUG
-
-# fast build rule for target.
-IBLBUG/fast:
-	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/build
-.PHONY : IBLBUG/fast
-
-#=============================================================================
 # Target rules for targets named IBL
 
 # Build rule for target.
@@ -195,7 +182,7 @@ IBL.o: IBL.cpp.o
 
 # target to build an object file
 IBL.cpp.o:
-	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/IBL.cpp.o
+	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBL.cpp.o
 .PHONY : IBL.cpp.o
 
 IBL.i: IBL.cpp.i
@@ -204,7 +191,7 @@ IBL.i: IBL.cpp.i
 
 # target to preprocess a source file
 IBL.cpp.i:
-	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/IBL.cpp.i
+	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBL.cpp.i
 .PHONY : IBL.cpp.i
 
 IBL.s: IBL.cpp.s
@@ -213,35 +200,8 @@ IBL.s: IBL.cpp.s
 
 # target to generate assembly for a file
 IBL.cpp.s:
-	$(MAKE) -f CMakeFiles/IBLBUG.dir/build.make CMakeFiles/IBLBUG.dir/IBL.cpp.s
+	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBL.cpp.s
 .PHONY : IBL.cpp.s
-
-IBLCopy.o: IBLCopy.cpp.o
-
-.PHONY : IBLCopy.o
-
-# target to build an object file
-IBLCopy.cpp.o:
-	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBLCopy.cpp.o
-.PHONY : IBLCopy.cpp.o
-
-IBLCopy.i: IBLCopy.cpp.i
-
-.PHONY : IBLCopy.i
-
-# target to preprocess a source file
-IBLCopy.cpp.i:
-	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBLCopy.cpp.i
-.PHONY : IBLCopy.cpp.i
-
-IBLCopy.s: IBLCopy.cpp.s
-
-.PHONY : IBLCopy.s
-
-# target to generate assembly for a file
-IBLCopy.cpp.s:
-	$(MAKE) -f CMakeFiles/IBL.dir/build.make CMakeFiles/IBL.dir/IBLCopy.cpp.s
-.PHONY : IBLCopy.cpp.s
 
 model.o: model.cpp.o
 
@@ -279,7 +239,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... MODEL"
-	@echo "... IBLBUG"
 	@echo "... IBL"
 	@echo "... BRDF"
 	@echo "... BRDF.o"
@@ -288,9 +247,6 @@ help:
 	@echo "... IBL.o"
 	@echo "... IBL.i"
 	@echo "... IBL.s"
-	@echo "... IBLCopy.o"
-	@echo "... IBLCopy.i"
-	@echo "... IBLCopy.s"
 	@echo "... model.o"
 	@echo "... model.i"
 	@echo "... model.s"

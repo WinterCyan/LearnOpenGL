@@ -1,6 +1,5 @@
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles/edit_cache.dir
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles/MODEL.dir
-/home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles/IBLBUG.dir
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles/IBL.dir
 /home/wintercyan/code/clion/LearnOpenGL/OpenGL/cmake-build-debug/CMakeFiles/BRDF.dir

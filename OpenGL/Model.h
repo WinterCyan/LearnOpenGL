@@ -107,12 +107,25 @@ private:
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex]; // get material for this mesh
             
             // get different textures from material, which have different types
-            vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+            vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "aiTextureType_DIFFUSE");
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-            vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+            vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "aiTextureType_SPECULAR");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-            vector<Texture> reflectMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ambient");
-            textures.insert(textures.end(), reflectMaps.begin(), reflectMaps.end());
+            vector<Texture> ambientMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "aiTextureType_AMBIENT");
+            textures.insert(textures.end(), ambientMaps.begin(), ambientMaps.end());
+            vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "aiTextureType_NORMALS");
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
+            vector<Texture> pbrAlbedoMaps = loadMaterialTextures(material, aiTextureType_BASE_COLOR, "aiTextureType_BASE_COLOR");
+            textures.insert(textures.end(), pbrAlbedoMaps.begin(), pbrAlbedoMaps.end());
+            vector<Texture> pbrNormalMaps = loadMaterialTextures(material, aiTextureType_NORMAL_CAMERA, "aiTextureType_NORMAL_CAMERA");
+            textures.insert(textures.end(), pbrNormalMaps.begin(), pbrNormalMaps.end());
+            vector<Texture> pbrMetalnessMaps = loadMaterialTextures(material, aiTextureType_METALNESS, "aiTextureType_METALNESS");
+            textures.insert(textures.end(), pbrMetalnessMaps.begin(), pbrMetalnessMaps.end());
+            vector<Texture> pbrRoughnessMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, "aiTextureType_DIFFUSE_ROUGHNESS");
+            textures.insert(textures.end(), pbrRoughnessMaps.begin(), pbrRoughnessMaps.end());
+            vector<Texture> pbrAOMaps = loadMaterialTextures(material, aiTextureType_AMBIENT_OCCLUSION, "aiTextureType_AMBIENT_OCCLUSION");
+            textures.insert(textures.end(), pbrAOMaps.begin(), pbrAOMaps.end());
         }
         
         return Mesh(vertices, indices, textures);
@@ -123,6 +136,7 @@ private:
         vector<Texture> textures;
         
         // for certain type
+//        cout<<"texture number of "<<type<<": "<<mat->GetTextureCount(type)<<endl;
         for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;
             mat->GetTexture(type, i, &str); // get i-th texture of type, and store name in str
@@ -151,7 +165,8 @@ private:
 unsigned int TextureFromFile(const char *name, const string &dir, bool gamma) {
     string fileName = string(name);
     fileName = dir + '/' + fileName;
-    
+    if (fileName.find("\\") != fileName.npos) fileName.replace(fileName.find("\\"),1,"/");
+
     unsigned int textureId;
     glGenTextures(1, &textureId);
     
@@ -162,7 +177,7 @@ unsigned int TextureFromFile(const char *name, const string &dir, bool gamma) {
         if (nrChannels == 1) format = GL_RED;
         else if (nrChannels ==3) format = GL_RGB;
         else format = GL_RGBA;
-        
+
         glBindTexture(GL_TEXTURE_2D, textureId);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);

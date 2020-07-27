@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/IBL.dir/IBLCopy.cpp.o"
+  "CMakeFiles/IBL.dir/IBL.cpp.o"
   "IBL"
   "IBL.pdb"
 )

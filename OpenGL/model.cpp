@@ -8,17 +8,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <cmath>
-#include <unistd.h>
 #include "MyShader.h"
-#include <cmath>
-#include "MyCamera.h"
-#include "Model.h"
 #include "toolkit.h"
 
 using namespace std;
@@ -45,8 +38,10 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     
     MyShader shader (PROJECT_DIR"modelvs", PROJECT_DIR"modelfs",NULL);
-    Model my_model(PROJECT_DIR"capsule/capsule.obj");
-    
+//    Model objModel(PROJECT_DIR"models/Bik_OBJ/Bike.obj");
+    Model objModel(PROJECT_DIR"models/pear/pear_export.obj");
+//    Model fbxModel(PROJECT_DIR"gun/gun.FBX");
+
     while(!glfwWindowShouldClose(win)){
         float currFrame = glfwGetTime();
         deltaTime = currFrame - lastFrame;
@@ -57,7 +52,6 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         
         shader.use();
-        
         auto projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH/(float)HEIGHT, .1f, 100.f);
         auto view = camera.getViewMatrix();
         shader.setMat4("projection", projection);
@@ -65,9 +59,9 @@ int main(){
         auto model = glm::mat4(1.f);
 //        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
 //        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-        model = glm::rotate(model,glm::radians(-90.f),glm::vec3(1.f,0.0,0.0));
+//        model = glm::rotate(model,glm::radians(-90.f),glm::vec3(1.f,0.0,0.0));
         shader.setMat4("model", model);
-        my_model.Draw(shader);
+        objModel.Draw(shader);
         
         glfwSwapBuffers(win);
         glfwPollEvents();
