@@ -60,8 +60,8 @@ int main() {
     shader.setInt("normalTex",3);
 //    shader.setInt("aoTex",4);
 
-    const float LIGHT_DISTANCE = 20.f;
-    const float LIGHT_BRIGHTNESS = 1700.f;
+    const float LIGHT_DISTANCE = 1.f;
+    const float LIGHT_BRIGHTNESS = 2700.f;
     glm::vec3 lightPoss[] = {
             glm::vec3(-LIGHT_DISTANCE,  LIGHT_DISTANCE, LIGHT_DISTANCE),
             glm::vec3( LIGHT_DISTANCE,  LIGHT_DISTANCE, LIGHT_DISTANCE),
@@ -87,7 +87,7 @@ int main() {
     cubeMapShader.setInt("equirectangularMap",0);
 
     // textures
-    unsigned int albedoTex = loadTexture(TEX_DIR"iron/basecolor.png");
+    unsigned int albedoTex = loadTexture(TEX_DIR"floor.jpg");
     unsigned int metallicTex = loadTexture(TEX_DIR"iron/metallic.png");
     unsigned int normalTex = loadTexture(TEX_DIR"iron/normal.png");
     unsigned int roughnessTex = loadTexture(TEX_DIR"iron/roughness.png");
@@ -178,6 +178,7 @@ int main() {
         auto projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH/(float)HEIGHT, .1f, 100.f);
         auto view = camera.getViewMatrix();
         auto model = glm::mat4(1.f);
+        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f, .0f, .0f));
 
 //        cubeMapShader.use();
 //        cubeMapShader.setMat4("projection", projection);
@@ -200,16 +201,17 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, roughnessTex);
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, normalTex);
-        for (int row = 0; row < rowSize; row++) {
-            shader.setFloat("metallic", (float)row/(float)rowSize);
-            for (int col = 0; col < colSize; col++) {
-                shader.setFloat("roughness", glm::clamp((float)col/(float)colSize,0.1f,1.0f));
-                model = glm::mat4(1.f);
-                model = glm::translate(model, glm::vec3(((float)col-colSize/2.0)*spacing,((float)row-rowSize/2.0)*spacing,0));
-                shader.setMat4("model",model);
-                renderSphere(0.2);
-            }
-        }
+        renderQuad(1.0);
+//        for (int row = 0; row < rowSize; row++) {
+//            shader.setFloat("metallic", (float)row/(float)rowSize);
+//            for (int col = 0; col < colSize; col++) {
+//                shader.setFloat("roughness", glm::clamp((float)col/(float)colSize,0.1f,1.0f));
+//                model = glm::mat4(1.f);
+//                model = glm::translate(model, glm::vec3(((float)col-colSize/2.0)*spacing,((float)row-rowSize/2.0)*spacing,0));
+//                shader.setMat4("model",model);
+//                renderSphere(0.2);
+//            }
+//        }
 
         skyboxShader.use();
 //        skyboxShader.setMat4("projection",projection);

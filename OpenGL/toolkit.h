@@ -50,7 +50,7 @@ bool hdr = true;
 bool hdrKeyPressed = false;
 float exposure = 1.0f;
 
-MyCamera camera(glm::vec3(0.f, 0.f, 5.f));
+MyCamera camera(glm::vec3(0.f, 0.f, 1.f));
 
 void mouse_callback(GLFWwindow* win, double xpos, double ypos){
     if (firstMouse) {
@@ -158,6 +158,80 @@ unsigned int loadTexture(char const * path)
     return textureID;
 }
 
+unsigned int* loadNDRS(char const * path)
+{
+    unsigned int* textureIDs = new unsigned int[4];
+    glGenTextures(4, textureIDs);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    int single_width = width/5;
+
+    unsigned char *n = new unsigned char[single_width * height * nrComponents];
+    unsigned char *d = new unsigned char[single_width * height * nrComponents];
+    unsigned char *r = new unsigned char[single_width * height * nrComponents];
+    unsigned char *s = new unsigned char[single_width * height * nrComponents];
+    for (int col=0; col<single_width; col++) {
+        for (int row=0; row<height; row++) {
+            for (int c=0; c<nrComponents; c++){
+                // first c, second col, third row
+                int src_n_idx = c + (col+single_width) * nrComponents + (height-row) * width * nrComponents;
+//                n[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_n_idx];
+                n[c+col*nrComponents+row*single_width*nrComponents] = data[src_n_idx];
+                int src_d_idx = c + (col+2*single_width) * nrComponents + (height-row) * width * nrComponents;
+//                d[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_d_idx];
+                d[c+col*nrComponents+row*single_width*nrComponents] = data[src_d_idx];
+                int src_r_idx = c + (col+3*single_width) * nrComponents + (height-row) * width * nrComponents;
+//                r[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_r_idx];
+                r[c+col*nrComponents+row*single_width*nrComponents] = data[src_r_idx];
+                int src_s_idx = c + (col+4*single_width) * nrComponents + (height-row) * width * nrComponents;
+//                s[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_s_idx];
+                s[c+col*nrComponents+row*single_width*nrComponents] = data[src_s_idx];
+            }
+        }
+    }
+    if (data)
+    {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+        else format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, single_width, height, 0, format, GL_UNSIGNED_BYTE, n);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glBindTexture(GL_TEXTURE_2D, textureIDs[1]);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, single_width, height, 0, format, GL_UNSIGNED_BYTE, d);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glBindTexture(GL_TEXTURE_2D, textureIDs[2]);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, single_width, height, 0, format, GL_UNSIGNED_BYTE, r);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glBindTexture(GL_TEXTURE_2D, textureIDs[3]);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, single_width, height, 0, format, GL_UNSIGNED_BYTE, s);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureIDs;
+}
 
 unsigned int loadHDRTexture(char const * path) {
     unsigned int hdrTexture;
@@ -284,11 +358,11 @@ void renderQuad(float A){
     if (quadVAO == 0)
     {
         float quadVertices[] = {
-                // positions        // texture Coords
-                -A,  A, 0.0f, 0.0f, 1.0f,
-                -A, -A, 0.0f, 0.0f, 0.0f,
-                A,  A, 0.0f, 1.0f, 1.0f,
-                A, -A, 0.0f, 1.0f, 0.0f,
+                // positions  // normal        // texture Coords
+                -A,  A, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+                -A, -A, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                A,  A, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+                A, -A, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
@@ -297,9 +371,11 @@ void renderQuad(float A){
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     }
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

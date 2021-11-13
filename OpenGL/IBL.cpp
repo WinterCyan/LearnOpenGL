@@ -57,7 +57,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
+//    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
+    MyShader pbrShader(SCRIPT_DIR"vs.pbr",SCRIPT_DIR"fs_texture.pbr",NULL);
     MyShader pbrModelShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.withtexture.glsl", NULL);
     MyShader equirectangularToCubemapShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl", NULL);
     MyShader irradianceShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.irradiance_convolution.fs.glsl", NULL);
