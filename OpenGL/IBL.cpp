@@ -57,13 +57,13 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    MyShader pbrShader(PROJECT_DIR"2.2.1.pbr.vs.glsl", PROJECT_DIR"2.2.1.pbr.fs.glsl",NULL);
-    MyShader pbrModelShader(PROJECT_DIR"2.2.1.pbr.vs.glsl", PROJECT_DIR"2.2.1.pbr.fs.withtexture.glsl",NULL);
-    MyShader equirectangularToCubemapShader(PROJECT_DIR"2.2.1.cubemap.vs.glsl", PROJECT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl",NULL);
-    MyShader irradianceShader(PROJECT_DIR"2.2.1.cubemap.vs.glsl", PROJECT_DIR"2.2.1.irradiance_convolution.fs.glsl",NULL);
-    MyShader prefilterShader(PROJECT_DIR"2.2.1.cubemap.vs.glsl", PROJECT_DIR"2.2.1.prefilter.fs.glsl",NULL);
-    MyShader brdfShader(PROJECT_DIR"2.2.1.brdf.vs.glsl", PROJECT_DIR"2.2.1.brdf.fs.glsl",NULL);
-    MyShader backgroundShader(PROJECT_DIR"2.2.1.background.vs.glsl", PROJECT_DIR"2.2.1.background.fs.glsl",NULL);
+    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
+    MyShader pbrModelShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.withtexture.glsl", NULL);
+    MyShader equirectangularToCubemapShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl", NULL);
+    MyShader irradianceShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.irradiance_convolution.fs.glsl", NULL);
+    MyShader prefilterShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.prefilter.fs.glsl", NULL);
+    MyShader brdfShader(SCRIPT_DIR"2.2.1.brdf.vs.glsl", SCRIPT_DIR"2.2.1.brdf.fs.glsl", NULL);
+    MyShader backgroundShader(SCRIPT_DIR"2.2.1.background.vs.glsl", SCRIPT_DIR"2.2.1.background.fs.glsl", NULL);
 
     pbrShader.use();
     pbrShader.setInt("irradianceMap", 0);
@@ -118,16 +118,16 @@ int main()
 
     // model: load models from file
     // ---------------------------------
-//    Model capsule(PROJECT_DIR"models/capsule/capsule.obj");
-//    Model stool(PROJECT_DIR"models/Stool.obj");
-//    Model pear(PROJECT_DIR"models/pear/pear_export.obj");
-//    Model chair(PROJECT_DIR"models/Chairs/Chairs.obj");
+//    Model capsule(SCRIPT_DIR"models/capsule/capsule.obj");
+//    Model stool(SCRIPT_DIR"models/Stool.obj");
+//    Model pear(SCRIPT_DIR"models/pear/pear_export.obj");
+//    Model chair(SCRIPT_DIR"models/Chairs/Chairs.obj");
     Model gun(PROJECT_DIR"models/gun/gun.FBX");
 
     // pbr: load the HDR environment map
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(PROJECT_DIR"pbrtex/road.hdr");
+    unsigned int hdrTexture = loadHDRTexture(PROJECT_DIR"hdr/lobby.hdr");
     unsigned int normalMap = loadHDRTexture(PROJECT_DIR"models/gun/Textures/Cerberus_N.tga");
     unsigned int metallicMap = loadHDRTexture(PROJECT_DIR"models/gun/Textures/Cerberus_M.tga");
     unsigned int roughnessMap = loadHDRTexture(PROJECT_DIR"models/gun/Textures/Cerberus_R.tga");

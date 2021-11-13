@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/BRDF.dir/BRDF.cpp.o  -o BRDF  -lGL -lGLU -lGLEW -lglfw3 -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor -lassimp 

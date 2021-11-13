@@ -18,7 +18,7 @@
  
  QUICK NOTES:
  Primarily of interest to game developers and other people who can
- avoid problematic images and only need the trivial interface
+ avoid problematic textures and only need the trivial interface
  
  JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib)
  PNG 1/2/4/8/16-bit-per-channel
@@ -161,7 +161,7 @@
 // to avoid compiling these strings at all, and STBI_FAILURE_USERMSG to get slightly
 // more user-friendly ones.
 //
-// Paletted PNG, BMP, GIF, and PIC images are automatically depalettized.
+// Paletted PNG, BMP, GIF, and PIC textures are automatically depalettized.
 //
 // ===========================================================================
 //
@@ -233,7 +233,7 @@
 //
 // HDR image support   (disable by defining STBI_NO_HDR)
 //
-// stb_image supports loading HDR images in general, and currently the Radiance
+// stb_image supports loading HDR textures in general, and currently the Radiance
 // .HDR file format specifically. You can still load any file through the existing
 // interface; if you attempt to load an HDR file, it will be automatically remapped
 // to LDR, assuming gamma 2.2 and an arbitrary scale factor defaulting to 1;
@@ -250,7 +250,7 @@
 //
 //    float *data = stbi_loadf(filename, &x, &y, &n, 0);
 //
-// If you load LDR images through this interface, those images will
+// If you load LDR textures through this interface, those textures will
 // be promoted to floating point values, run through the inverse of
 // constants corresponding to the above:
 //
@@ -276,7 +276,7 @@
 //
 // Call stbi_set_unpremultiply_on_load(1) as well to force a divide per
 // pixel to remove any premultiplied alpha *only* if the image file explicitly
-// says there's premultiplied data (currently only happens in iPhone images,
+// says there's premultiplied data (currently only happens in iPhone textures,
 // and only if iPhone convert-to-rgb processing is on).
 //
 // ===========================================================================
@@ -350,7 +350,7 @@ extern "C" {
     
     //////////////////////////////////////////////////////////////////////////////
     //
-    // PRIMARY API - works on images of any type
+    // PRIMARY API - works on textures of any type
     //
     
     //
@@ -459,7 +459,7 @@ extern "C" {
     // unpremultiplication. results are undefined if the unpremultiply overflow.
     STBIDEF void stbi_set_unpremultiply_on_load(int flag_true_if_should_unpremultiply);
     
-    // indicate whether we should process iphone images back to canonical format,
+    // indicate whether we should process iphone textures back to canonical format,
     // or just pass them through "as-is"
     STBIDEF void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert);
     
@@ -718,7 +718,7 @@ static int stbi__sse2_available(void)
 //
 //  stbi__context struct and start_xxx functions
 
-// stbi__context structure is our basic context used by all images, so it
+// stbi__context structure is our basic context used by all textures, so it
 // contains all the IO context, plus some basic image information
 typedef struct
 {
@@ -4073,7 +4073,7 @@ static int stbi__parse_huffman_block(stbi__zbuf *a)
                 zout = a->zout;
             }
             p = (stbi_uc *) (zout - dist);
-            if (dist == 1) { // run of one byte; common in images.
+            if (dist == 1) { // run of one byte; common in textures.
                 stbi_uc v = *p;
                 if (len) { do *zout++ = v; while (--len); }
             } else {
@@ -4878,7 +4878,7 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
                     if (z->depth == 16) {
                         for (k = 0; k < s->img_n; ++k) tc16[k] = (stbi__uint16)stbi__get16be(s); // copy the values as-is
                     } else {
-                        for (k = 0; k < s->img_n; ++k) tc[k] = (stbi_uc)(stbi__get16be(s) & 255) * stbi__depth_scale_table[z->depth]; // non 8-bit images will be larger
+                        for (k = 0; k < s->img_n; ++k) tc[k] = (stbi_uc)(stbi__get16be(s) & 255) * stbi__depth_scale_table[z->depth]; // non 8-bit textures will be larger
                     }
                 }
                 break;
@@ -5490,7 +5490,7 @@ static int stbi__tga_test(stbi__context *s)
     if ( stbi__get16le(s) < 1 ) goto errorEnd;      //   test width
     if ( stbi__get16le(s) < 1 ) goto errorEnd;      //   test height
     sz = stbi__get8(s);   //   bits per pixel
-    if ( (tga_color_type == 1) && (sz != 8) && (sz != 16) ) goto errorEnd; // for colormapped images, bpp is size of an index
+    if ( (tga_color_type == 1) && (sz != 8) && (sz != 16) ) goto errorEnd; // for colormapped textures, bpp is size of an index
     if ( (sz != 8) && (sz != 15) && (sz != 16) && (sz != 24) && (sz != 32) ) goto errorEnd;
     
     res = 1; // if we got this far, everything's good and we can return 1 instead of 0
@@ -5516,7 +5516,7 @@ static void stbi__tga_read_rgb16(stbi__context *s, stbi_uc* out)
     
     // some people claim that the most significant bit might be used for alpha
     // (possibly if an alpha-bit is set in the "image descriptor byte")
-    // but that only made 16bit test images completely translucent..
+    // but that only made 16bit test textures completely translucent..
     // so let's treat all 15 and 16bit TGAs as RGB with no alpha.
 }
 
@@ -7408,7 +7408,7 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
  remove duplicate typedef
  1.36  (2014-06-03)
  convert to header file single-file library
- if de-iphone isn't set, load iphone images color-swapped instead of returning NULL
+ if de-iphone isn't set, load iphone textures color-swapped instead of returning NULL
  1.35  (2014-05-27)
  various warnings
  fix broken STBI_SIMD path

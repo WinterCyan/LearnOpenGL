@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/MODEL.dir/model.cpp.o  -o MODEL  -lGL -lGLU -lGLEW -lglfw3 -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor -lassimp 

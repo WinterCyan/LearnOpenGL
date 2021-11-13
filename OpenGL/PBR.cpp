@@ -113,12 +113,12 @@ int main() {
     cubeMapShader.setInt("equirectangularMap",0);
 
     // textures
-    unsigned int albedoTex = loadTexture(PROJECT_DIR"pbrtex/basecolor.png",false);
-    unsigned int metallicTex = loadTexture(PROJECT_DIR"pbrtex/metallic.png",false);
-    unsigned int normalTex = loadTexture(PROJECT_DIR"pbrtex/normal.png",false);
-    unsigned int roughnessTex = loadTexture(PROJECT_DIR"pbrtex/roughness.png",false);
+    unsigned int albedoTex = loadTexture(PROJECT_DIR"hdr/basecolor.png",false);
+    unsigned int metallicTex = loadTexture(PROJECT_DIR"hdr/metallic.png",false);
+    unsigned int normalTex = loadTexture(PROJECT_DIR"hdr/normal.png",false);
+    unsigned int roughnessTex = loadTexture(PROJECT_DIR"hdr/roughness.png",false);
 
-    unsigned int hdrTex = loadHDRTexture(PROJECT_DIR"pbrtex/lobbycenter.hdr");
+    unsigned int hdrTex = loadHDRTexture(PROJECT_DIR"hdr/lobbycenter.hdr");
 
     // create frame_buffer & render_buffer
     unsigned int fbo, rbo;
@@ -143,12 +143,12 @@ int main() {
 
 
     vector<const char*> faces = {
-            PROJECT_DIR"faces/right.jpg",
-            PROJECT_DIR"faces/left.jpg",
-            PROJECT_DIR"faces/top.jpg",
-            PROJECT_DIR"faces/bottom.jpg",
-            PROJECT_DIR"faces/back.jpg",
-            PROJECT_DIR"faces/front.jpg"
+            PROJECT_DIR"skybox/right.jpg",
+            PROJECT_DIR"skybox/left.jpg",
+            PROJECT_DIR"skybox/top.jpg",
+            PROJECT_DIR"skybox/bottom.jpg",
+            PROJECT_DIR"skybox/back.jpg",
+            PROJECT_DIR"skybox/front.jpg"
     };
     unsigned int cubeMap = loadCubemap(faces);
 

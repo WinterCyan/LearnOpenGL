@@ -20,7 +20,7 @@
 #include "MyCamera.h"
 #include <vector>
 #include "Model.h"
-#include "params.h"
+#include "toolkit.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
@@ -28,18 +28,10 @@
 
 using namespace std;
 
-void mouse_callback(GLFWwindow* win, double xpos, double ypos);
-void processInput(GLFWwindow* win);
-void scroll_callback(GLFWwindow* win, double xoffset, double yoffset);
 unsigned int loadTexture(char const * path);
 unsigned int loadCubemap(vector<const char*> faces);
-float deltaTime = 0.f;
-float lastFrame = 0.f;
 
 MyCamera myCamera(glm::vec3(.0f, .0f, 3.0f));
-
-float lastX = 0.f, lastY = 0.f;
-bool firstMouse = true;
 
 int main(){
     glfwInit();
@@ -63,11 +55,11 @@ int main(){
     
     glEnable(GL_DEPTH_TEST);
     
-    MyShader shader = MyShader(PROJECT_DIR"vs.reflect", PROJECT_DIR"fs.reflect",NULL);
+    MyShader shader = MyShader(SCRIPT_DIR"vs.reflect", SCRIPT_DIR"fs.reflect",NULL);
     
-    MyShader skyboxShader = MyShader(PROJECT_DIR"vs.cube", PROJECT_DIR"fs.cube",NULL);
+    MyShader skyboxShader = MyShader(SCRIPT_DIR"vs.cube", SCRIPT_DIR"fs.cube",NULL);
 
-    MyShader modelShader(PROJECT_DIR"modelvs", PROJECT_DIR"modelfs",NULL);
+    MyShader modelShader(SCRIPT_DIR"modelvs", SCRIPT_DIR"modelfs",NULL);
     
     float cubeVertices[] = {
         // positions          // normals
@@ -159,19 +151,19 @@ int main(){
     };
     
     unsigned int texture1;
-    texture1 = loadTexture(PROJECT_DIR"container.jpg");
+    texture1 = loadTexture(TEX_DIR"container.jpg");
     
     vector<const char*> faces = {
-        PROJECT_DIR"faces/right.jpg",
-        PROJECT_DIR"faces/left.jpg",
-        PROJECT_DIR"faces/top.jpg",
-        PROJECT_DIR"faces/bottom.jpg",
-        PROJECT_DIR"faces/back.jpg",
-        PROJECT_DIR"faces/front.jpg"
+        TEX_DIR"skybox/right.jpg",
+        TEX_DIR"skybox/left.jpg",
+        TEX_DIR"skybox/top.jpg",
+        TEX_DIR"skybox/bottom.jpg",
+        TEX_DIR"skybox/back.jpg",
+        TEX_DIR"skybox/front.jpg"
     };
     unsigned int cubeMap = loadCubemap(faces);
     
-    Model my_model(PROJECT_DIR"nanosuit_reflection/nanosuit.obj");
+    Model my_model(MODEL_DIR"nanosuit_reflection/nanosuit.obj");
 
     
     // cube
@@ -260,43 +252,6 @@ int main(){
     glfwTerminate();
     
     return 0;
-}
-
-void mouse_callback(GLFWwindow* win, double xpos, double ypos){
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-    
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
-    
-    myCamera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-void processInput(GLFWwindow* win){
-    if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(win, true);
-    
-    if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
-        myCamera.ProcessKeyboard(FORWARD, deltaTime);
-    }
-    if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
-        myCamera.ProcessKeyboard(BACKWARD, deltaTime);
-    }
-    if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS) {
-        myCamera.ProcessKeyboard(LEFT, deltaTime);
-    }
-    if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS) {
-        myCamera.ProcessKeyboard(RIGHT, deltaTime);
-    }
-}
-
-void scroll_callback(GLFWwindow* win, double xoffset, double yoffset){
-    myCamera.ProcessMouseScroll(yoffset);
 }
 
 unsigned int loadTexture(char const * path)

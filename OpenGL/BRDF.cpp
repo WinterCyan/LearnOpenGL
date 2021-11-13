@@ -63,8 +63,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    MyShader pbrShader(PROJECT_DIR"2.2.1.pbr.vs.glsl", PROJECT_DIR"brdf.fs.glsl",NULL);
-    MyShader paletteShader(PROJECT_DIR"brdf.palette.vs.glsl", PROJECT_DIR"brdf.palette.fs.glsl",NULL);
+    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"brdf.fs.glsl", NULL);
+    MyShader paletteShader(SCRIPT_DIR"brdf.palette.vs.glsl", SCRIPT_DIR"brdf.palette.fs.glsl", NULL);
 
     // light
     // ------

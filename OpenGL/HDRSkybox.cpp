@@ -111,11 +111,11 @@ int main() {
     skyboxShader.setInt("envCubeMap", 0);
 
     // texture
-//    unsigned int albedoTex = loadTexture(PROJECT_DIR"pbrtex/basecolor.png",false);
-//    unsigned int metallicTex = loadTexture(PROJECT_DIR"pbrtex/metallic.png",false);
-//    unsigned int normalTex = loadTexture(PROJECT_DIR"pbrtex/normal.png",false);
-//    unsigned int roughnessTex = loadTexture(PROJECT_DIR"pbrtex/roughness.png",false);
-    unsigned int hdrTex = loadHDRTexture(PROJECT_DIR"pbrtex/center.hdr");
+//    unsigned int albedoTex = loadTexture(PROJECT_DIR"hdr/basecolor.png",false);
+//    unsigned int metallicTex = loadTexture(PROJECT_DIR"hdr/metallic.png",false);
+//    unsigned int normalTex = loadTexture(PROJECT_DIR"hdr/normal.png",false);
+//    unsigned int roughnessTex = loadTexture(PROJECT_DIR"hdr/roughness.png",false);
+    unsigned int hdrTex = loadHDRTexture(PROJECT_DIR"hdr/center.hdr");
 
     // create cubemap
     unsigned int envCubeMap;

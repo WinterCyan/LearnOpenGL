@@ -37,10 +37,10 @@ int main(){
     glewInit();
     glEnable(GL_DEPTH_TEST);
     
-    MyShader shader (PROJECT_DIR"modelvs", PROJECT_DIR"modelfs",NULL);
-//    Model objModel(PROJECT_DIR"models/Bik_OBJ/Bike.obj");
-    Model objModel(PROJECT_DIR"models/pear/pear_export.obj");
-//    Model fbxModel(PROJECT_DIR"gun/gun.FBX");
+    MyShader shader (SCRIPT_DIR"modelvs", SCRIPT_DIR"modelfs", NULL);
+//    Model objModel(SCRIPT_DIR"models/Bik_OBJ/Bike.obj");
+    Model objModel(SCRIPT_DIR"models/pear/pear_export.obj");
+//    Model fbxModel(SCRIPT_DIR"gun/gun.FBX");
 
     while(!glfwWindowShouldClose(win)){
         float currFrame = glfwGetTime();

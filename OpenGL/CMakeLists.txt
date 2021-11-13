@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 project(learnopengl)
-link_libraries(GL GLU GLEW glfw3 X11 Xxf86vm Xrandr pthread Xi dl Xinerama Xcursor assimp)
+link_libraries(GL GLU GLEW glfw3 X11 Xrandr pthread Xi dl Xinerama Xcursor assimp)
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(BRDF BRDF.cpp)
-add_executable(IBL IBL.cpp)
-add_executable(MODEL model.cpp)
-
+add_executable(brdf BRDF.cpp)
+add_executable(ibl IBL.cpp)
+add_executable(model model.cpp)
+add_executable(window window.cpp)
+add_executable(texture texture.cpp)
+add_executable(rectangle rectangle.cpp)
+add_executable(cubemap cubemap.cpp)

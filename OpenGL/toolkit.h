@@ -22,7 +22,10 @@
 #define PREFILTEREDMAP_BASE_SIZE 1024
 #define BRDFLUT_SIZE 1024
 #define TITLE "learn opengl"
-#define PROJECT_DIR "/home/wintercyan/code/clion/LearnOpenGL/"
+#define SCRIPT_DIR "/home/winter/code/LearnOpenGL/scripts/"
+#define TEX_DIR "/home/winter/code/LearnOpenGL/textures/"
+#define PROJECT_DIR "/home/winter/code/LearnOpenGL/"
+#define MODEL_DIR "/home/winter/code/LearnOpenGL/models/"
 
 unsigned int loadTexture(char const * path, bool gammaCorrection);
 unsigned int loadHDRTexture(char const * path);

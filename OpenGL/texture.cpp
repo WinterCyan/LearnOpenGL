@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cmath>
 #include <unistd.h>
+#include "toolkit.h"
 #include "MyShader.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -20,7 +21,7 @@
 //    glViewport(0,0,width, height);
 //}
 
-int texture(){
+int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -37,7 +38,7 @@ int texture(){
     glewExperimental = GL_TRUE;
     glewInit();
     
-    MyShader shader = MyShader("/Users/wintercyan/Documents/XCODE/GL/OpenGL/vfile.vs", "/Users/wintercyan/Documents/XCODE/GL/OpenGL/ffile.fs");
+    MyShader shader = MyShader(SCRIPT_DIR"vfile.vs", SCRIPT_DIR"ffile.fs", NULL);
     
 //    float vertices[] = {
 //        -.5f, -.5f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -64,7 +65,7 @@ int texture(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     int width, height, nrChannels;
-    unsigned char* pic_data = stbi_load("/Users/wintercyan/Documents/XCODE/GL/OpenGL/container.jpg",&width, &height, &nrChannels, 0);
+    unsigned char* pic_data = stbi_load(TEX_DIR"container.jpg",&width, &height, &nrChannels, 0);
     if (pic_data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pic_data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -80,7 +81,7 @@ int texture(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     int width2, height2, nrChannels2;
-    unsigned char* pic_data2 = stbi_load("/Users/wintercyan/Documents/XCODE/GL/OpenGL/face.png",&width2, &height2, &nrChannels2, 0);
+    unsigned char* pic_data2 = stbi_load(TEX_DIR"face.png",&width2, &height2, &nrChannels2, 0);
     if (pic_data2) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pic_data2);
         glGenerateMipmap(GL_TEXTURE_2D);

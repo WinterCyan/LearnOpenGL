@@ -13,7 +13,7 @@
 //    glViewport(0,0,width, height);
 //}
 
-int ractangle(){
+int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
