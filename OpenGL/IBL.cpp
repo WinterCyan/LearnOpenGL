@@ -122,15 +122,15 @@ int main()
 //    Model stool(SCRIPT_DIR"models/Stool.obj");
 //    Model pear(SCRIPT_DIR"models/pear/pear_export.obj");
 //    Model chair(SCRIPT_DIR"models/Chairs/Chairs.obj");
-    Model gun(PROJECT_DIR"models/gun/gun.FBX");
+    Model gun(MODEL_DIR"gun/gun.FBX");
 
     // pbr: load the HDR environment map
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(PROJECT_DIR"hdr/lobby.hdr");
-    unsigned int normalMap = loadHDRTexture(PROJECT_DIR"models/gun/Textures/Cerberus_N.tga");
-    unsigned int metallicMap = loadHDRTexture(PROJECT_DIR"models/gun/Textures/Cerberus_M.tga");
-    unsigned int roughnessMap = loadHDRTexture(PROJECT_DIR"models/gun/Textures/Cerberus_R.tga");
+    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/lobby.hdr");
+    unsigned int normalMap = loadHDRTexture(MODEL_DIR"gun/Textures/Cerberus_N.tga");
+    unsigned int metallicMap = loadHDRTexture(MODEL_DIR"gun/Textures/Cerberus_M.tga");
+    unsigned int roughnessMap = loadHDRTexture(MODEL_DIR"gun/Textures/Cerberus_R.tga");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------

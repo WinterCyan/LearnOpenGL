@@ -10,7 +10,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -18,26 +17,12 @@
 
 #include "MyShader.h"
 #include "MyCamera.h"
+#include "toolkit.h"
 
-#define WIDTH 1200
-#define HEIGHT 800
 #define TITLE "learn opengl"
+void local_renderQuad();
 
 using namespace std;
-
-unsigned int loadTexture(char const * path);
-void mouse_callback(GLFWwindow* win, double xpos, double ypos);
-void processInput(GLFWwindow* win);
-void scroll_callback(GLFWwindow* win, double xoffset, double yoffset);
-void renderQuad();
-
-float deltaTime = 0.f;
-float lastFrame = 0.f;
-float lastX = 0.f, lastY = 0.f;
-bool firstMouse = true;
-
-
-MyCamera camera(glm::vec3(0.f, 0.f, 1.f));
 
 int main() {
     glfwInit();
@@ -61,17 +46,17 @@ int main() {
     glewExperimental = GL_TRUE;
     glewInit();
     
-    MyShader shader("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/vs.parallaxmapping", "/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/fs.parallaxmapping", NULL);
+    MyShader shader(SCRIPT_DIR"vs.parallaxmapping", SCRIPT_DIR"fs.parallaxmapping", NULL);
     shader.use();
     shader.setInt("wallTexture", 0);
     shader.setInt("normalTexture", 1);
     shader.setInt("heightTexture", 2);
     
     
-    unsigned int wallTexture = loadTexture("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/wood.png");
-    unsigned int normalTexture = loadTexture("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/toy_box_normal.png");
+    unsigned int wallTexture = loadTexture(TEX_DIR"wood.png");
+    unsigned int normalTexture = loadTexture(TEX_DIR"toy_box_normal.png");
     unsigned int heightTexture =
-        loadTexture("/Users/wintercyan/XCODE/OpenGL/LearnOpenGL/toy_box_disp.png");
+        loadTexture(TEX_DIR"toy_box_disp.png");
     
 //    unsigned int wallTexture = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/bricks2.jpg");
 //    unsigned int normalTexture = loadTexture("/Users/wintercyan/Documents/XCODE/OpenGL/LearnOpenGL/bricks2_normal.jpg");
@@ -107,7 +92,7 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, normalTexture);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, heightTexture);
-        renderQuad();
+        local_renderQuad();
         
         
         
@@ -118,84 +103,10 @@ int main() {
     glfwTerminate();
 }
 
-void mouse_callback(GLFWwindow* win, double xpos, double ypos){
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-    
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
-    
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-void processInput(GLFWwindow* win){
-    if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(win, true);
-    
-    if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    }
-    if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    }
-    if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS) {
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    }
-    if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS) {
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-    }
-}
-
-void scroll_callback(GLFWwindow* win, double xoffset, double yoffset){
-    camera.ProcessMouseScroll(yoffset);
-}
-
-unsigned int loadTexture(char const * path){
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
-        else format = GL_RGBA;
-        
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
-    
-    return textureID;
-}
-
-void renderQuad() {
+void local_renderQuad() {
     unsigned int VAO = 0;
     unsigned int VBO;
-    
+
     if (VAO == 0) {
         // position
         glm::vec3 pos1(-1.f, 1.f, 0.f);
@@ -209,7 +120,7 @@ void renderQuad() {
         glm::vec2 uv4(1.f, 1.f);
         // normal
         glm::vec3 nm(0.f, 0.f, 1.f);
-        
+
         // two edges of one triangle
         glm::vec3 m = pos2 - pos1;
         glm::vec3 n = pos3 - pos1;
@@ -223,7 +134,7 @@ void renderQuad() {
         float denominator = alpha*tau - gamma*beta;
         T1 = glm::normalize(glm::vec3(tau*m.x - beta*n.x, tau*m.y - beta*n.y, tau*m.z - beta*n.z) / denominator);
         B1 = glm::normalize(glm::vec3(-gamma*m.x + alpha*n.x, -gamma*m.y + alpha*n.y, -gamma*m.z + alpha*n.z) / denominator);
-        
+
         // two edges of another triangle
 //        glm::vec3 m = pos3 - pos1;
 //        glm::vec3 n = pos4 - pos1;
@@ -247,18 +158,18 @@ void renderQuad() {
         denominator = alpha*tau - gamma*beta;
         T2 = glm::normalize(glm::vec3(tau*m.x - beta*n.x, tau*m.y - beta*n.y, tau*m.z - beta*n.z) / denominator);
         B2 = glm::normalize(glm::vec3(-gamma*m.x + alpha*n.x, -gamma*m.y + alpha*n.y, -gamma*m.z + alpha*n.z) / denominator);
-        
+
         float quadVertices[] = {
             // position             // normal         // tex-coord   // tan            // bi-tan
             pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, T1.x, T1.y, T1.z, B1.x, B1.y, B1.z,
             pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, T1.x, T1.y, T1.z, B1.x, B1.y, B1.z,
             pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, T1.x, T1.y, T1.z, B1.x, B1.y, B1.z,
-            
+
             pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, T2.x, T2.y, T2.z, B2.x, B2.y, B2.z,
             pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, T2.x, T2.y, T2.z, B2.x, B2.y, B2.z,
             pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, T2.x, T2.y, T2.z, B2.x, B2.y, B2.z,
         };
-        
+
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
         glGenBuffers(1, &VBO);

@@ -6,12 +6,14 @@ in vec3 WorldPos;
 in vec3 Normal;
 
 uniform vec3 camPos;
+
 uniform sampler2D albedoTex;
 uniform sampler2D metallicTex;
 uniform sampler2D roughnessTex;
 uniform sampler2D normalTex;
 //uniform sampler2D aoTex;
 uniform float ao;
+
 uniform vec3 lightPoss[4];
 uniform vec3 lightColors[4];
 

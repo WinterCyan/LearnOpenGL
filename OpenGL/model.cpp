@@ -39,7 +39,7 @@ int main(){
     
     MyShader shader (SCRIPT_DIR"modelvs", SCRIPT_DIR"modelfs", NULL);
 //    Model objModel(SCRIPT_DIR"models/Bik_OBJ/Bike.obj");
-    Model objModel(SCRIPT_DIR"models/pear/pear_export.obj");
+    Model objModel(MODEL_DIR"pear/pear_export.obj");
 //    Model fbxModel(SCRIPT_DIR"gun/gun.FBX");
 
     while(!glfwWindowShouldClose(win)){
