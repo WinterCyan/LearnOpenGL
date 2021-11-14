@@ -15,9 +15,11 @@
 #include "MyCamera.h"
 #include "Model.h"
 
-#define WIDTH 3840
-#define HEIGHT 2160
-#define CUBEMAP_SIZE 2560
+//#define WIDTH 2560
+#define WIDTH 512
+//#define HEIGHT 1440
+#define HEIGHT 512
+#define CUBEMAP_SIZE 1440
 #define IRRADIANCEMAP_SIZE 128
 #define PREFILTEREDMAP_BASE_SIZE 1024
 #define BRDFLUT_SIZE 1024
@@ -50,7 +52,7 @@ bool hdr = true;
 bool hdrKeyPressed = false;
 float exposure = 1.0f;
 
-MyCamera camera(glm::vec3(0.f, 0.f, 1.f));
+MyCamera camera(glm::vec3(0.f, 3.f, 0.f));
 
 void mouse_callback(GLFWwindow* win, double xpos, double ypos){
     if (firstMouse) {

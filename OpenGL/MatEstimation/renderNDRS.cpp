@@ -93,7 +93,7 @@ int main() {
 //    unsigned int metallicMap = loadTexture(TEX_DIR"iron/metallic.png");
 //    unsigned int roughnessMap = loadTexture(TEX_DIR"iron/roughness.png");
     unsigned int aoMap = loadTexture(TEX_DIR"iron/ao.png");
-    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/77.png");
+    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/82.png");
 
     // create frame_buffer & render_buffer
 //    unsigned int fbo, rbo;
