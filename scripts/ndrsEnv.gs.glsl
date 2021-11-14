@@ -24,8 +24,8 @@ uniform sampler2D roughnessMap; // 7
 //uniform sampler2D aoMap;
 
 // lights
-uniform vec3 lightPositions[4];
-uniform vec3 lightColors[4];
+uniform vec3 lightPositions[5];
+uniform vec3 lightColors[5];
 
 uniform vec3 camPos;
 
@@ -122,7 +122,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i)
+    for(int i = 0; i < 5; ++i)
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPositions[i] - WorldPos);
