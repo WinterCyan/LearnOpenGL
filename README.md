@@ -9,7 +9,7 @@ git clone https://github.com/glfw/glfw
 mkdir build && cd build && cmake ../ && make -j4 && sudo make install
 ```
 
-2. glad online service, C/C++ -> OpenGL -> Version 4.5 -> Core -> Generate a Loader -> Download
+2. glad [online service](https://glad.dav1d.de/), C/C++ -> OpenGL -> Version 4.5 -> Core -> Generate a Loader -> Download
 
 ```shell
 cp -r glad/include/* (glad & KHR) /usr/local/include/
