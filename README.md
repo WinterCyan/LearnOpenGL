@@ -2,11 +2,15 @@
 *original website:* https://learnopengl.com
 
 Ubuntu env configuration:
-1. glfw
+1. glfw & dependency
 ```shell
 sudo apt-get install libglfw3-dev
 git clone https://github.com/glfw/glfw
 mkdir build && cd build && cmake ../ && make -j4 && sudo make install
+```
+
+```
+sudo apt-get install libxinerama-dev libxcursor-dev libxi-dev
 ```
 
 2. glad [online service](https://glad.dav1d.de/), C/C++ -> OpenGL -> Version 4.5 -> Core -> Generate a Loader -> Generate -> Download & Unzip glad.zip
