@@ -75,15 +75,19 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 // ----------------------------------------------------------------------------
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
+vec3 fresnelSchlick(float cosTheta, vec3 specular)
 {
-    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+//    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+    float VH = clamp(cosTheta, 0.0, 1.0);
+    return specular + (1.0-specular) * pow(2, (-5.55473*VH-6.98316)*VH);
 }
 // ----------------------------------------------------------------------------
 void main()
 {
     vec3 albedo     = pow(texture(albedoMap, TexCoords).rgb, vec3(2.2));
-    vec3 metallic  = texture(metallicMap, TexCoords).rgb;
+//    vec3 albedo     = texture(albedoMap, TexCoords).rgb;
+//    vec3 metallic  = texture(metallicMap, TexCoords).rgb;
+    vec3 metallic   = pow(texture(metallicMap, TexCoords).rgb, vec3(2.2));
     float roughness = texture(roughnessMap, TexCoords).r;
     float ao        = texture(aoMap, TexCoords).r;
 
@@ -92,8 +96,8 @@ void main()
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)
-    vec3 F0 = vec3(0.04);
-    F0 = mix(F0, albedo, metallic);
+//    vec3 F0 = vec3(0.04);
+//    F0 = mix(F0, albedo, metallic);
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -109,7 +113,7 @@ void main()
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
     float G   = GeometrySmith(N, V, L, roughness);
-    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), metallic);
 
     vec3 numerator    = NDF * G * F;
     float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
@@ -140,7 +144,7 @@ void main()
     vec3 color = ambient + Lo;
 
     // HDR tonemapping
-    color = color / (color + vec3(1.0));
+//    color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2));
 
