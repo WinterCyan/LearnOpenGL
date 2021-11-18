@@ -12,12 +12,17 @@
 #include <iostream>
 #include <vector>
 #include "MyShader.h"
+#include "stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 #include "MyCamera.h"
 #include "Model.h"
 
-#define WIDTH 3840
-#define HEIGHT 2160
-#define CUBEMAP_SIZE 2560
+//#define WIDTH 2560
+#define WIDTH 512
+//#define HEIGHT 1440
+#define HEIGHT 512
+#define CUBEMAP_SIZE 1440
 #define IRRADIANCEMAP_SIZE 128
 #define PREFILTEREDMAP_BASE_SIZE 1024
 #define BRDFLUT_SIZE 1024
@@ -25,9 +30,9 @@
 #define SCRIPT_DIR "/home/winter/code/LearnOpenGL/scripts/"
 #define TEX_DIR "/home/winter/code/LearnOpenGL/textures/"
 #define PROJECT_DIR "/home/winter/code/LearnOpenGL/"
+#define RESULT_DIR "/home/winter/code/LearnOpenGL/results/"
 #define MODEL_DIR "/home/winter/code/LearnOpenGL/models/"
 
-unsigned int loadTexture(char const * path, bool gammaCorrection);
 unsigned int loadTexture(char const * path);
 unsigned int loadHDRTexture(char const * path);
 unsigned int loadCubemap(vector<const char*> faces);
@@ -50,7 +55,7 @@ bool hdr = true;
 bool hdrKeyPressed = false;
 float exposure = 1.0f;
 
-MyCamera camera(glm::vec3(0.f, 0.f, 1.f));
+MyCamera camera(glm::vec3(0.f, 3.f, 0.f));
 
 void mouse_callback(GLFWwindow* win, double xpos, double ypos){
     if (firstMouse) {
@@ -175,16 +180,23 @@ unsigned int* loadNDRS(char const * path)
         for (int row=0; row<height; row++) {
             for (int c=0; c<nrComponents; c++){
                 // first c, second col, third row
-                int src_n_idx = c + (col+single_width) * nrComponents + (height-row) * width * nrComponents;
+//                int src_n_idx = c + (col+single_width) * nrComponents + (height-row) * width * nrComponents;
+                int src_n_idx = c + (col+single_width) * nrComponents + row * width * nrComponents;
 //                n[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_n_idx];
                 n[c+col*nrComponents+row*single_width*nrComponents] = data[src_n_idx];
-                int src_d_idx = c + (col+2*single_width) * nrComponents + (height-row) * width * nrComponents;
+
+//                int src_d_idx = c + (col+2*single_width) * nrComponents + (height-row) * width * nrComponents;
+                int src_d_idx = c + (col+2*single_width) * nrComponents + row * width * nrComponents;
 //                d[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_d_idx];
                 d[c+col*nrComponents+row*single_width*nrComponents] = data[src_d_idx];
-                int src_r_idx = c + (col+3*single_width) * nrComponents + (height-row) * width * nrComponents;
+
+//                int src_r_idx = c + (col+3*single_width) * nrComponents + (height-row) * width * nrComponents;
+                int src_r_idx = c + (col+3*single_width) * nrComponents + row * width * nrComponents;
 //                r[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_r_idx];
                 r[c+col*nrComponents+row*single_width*nrComponents] = data[src_r_idx];
-                int src_s_idx = c + (col+4*single_width) * nrComponents + (height-row) * width * nrComponents;
+
+//                int src_s_idx = c + (col+4*single_width) * nrComponents + (height-row) * width * nrComponents;
+                int src_s_idx = c + (col+4*single_width) * nrComponents + row * width * nrComponents;
 //                s[c+(single_width-col)*nrComponents+row*single_width*nrComponents] = data[src_s_idx];
                 s[c+col*nrComponents+row*single_width*nrComponents] = data[src_s_idx];
             }
@@ -283,6 +295,21 @@ unsigned int loadCubemap(vector<const char*> faces) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     return cubeID;
+}
+
+void saveImageFromWindow(const char* filepath, GLFWwindow* w) {
+    int width, height;
+    glfwGetFramebufferSize(w, &width, &height);
+    GLsizei nrChannels = 3;
+    GLsizei stride=nrChannels * width;
+    stride += (stride%4) ? (4-stride%4):0;
+    GLsizei bufferSize = stride * height;
+    std::vector<char> buffer(bufferSize);
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    glReadBuffer(GL_BACK);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+    stbi_flip_vertically_on_write(true);
+    stbi_write_png(filepath, width, height, nrChannels, buffer.data(), stride);
 }
 
 unsigned int cubeVAO = 0;

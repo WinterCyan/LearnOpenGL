@@ -1,5 +1,5 @@
 //
-// Created by wintercyan on 7/18/20.
+// Created by winter on 2021/11/14.
 //
 
 #include <GL/glew.h>
@@ -7,8 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
-#include "MyShader.h"
-#include "toolkit.h"
+#include "../MyShader.h"
+#include "../toolkit.h"
 
 using namespace std;
 
@@ -57,30 +57,26 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
-    MyShader pbrModelShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.withtexture.glsl", NULL);
+//    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
+//    MyShader pbrModelShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.withtexture.glsl", NULL);
+    MyShader ndrsEnvShader(SCRIPT_DIR"ndrsEnv.vs.glsl", SCRIPT_DIR"ndrsEnv.gs.glsl", NULL);
+
     MyShader equirectangularToCubemapShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl", NULL);
     MyShader irradianceShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.irradiance_convolution.fs.glsl", NULL);
     MyShader prefilterShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.prefilter.fs.glsl", NULL);
     MyShader brdfShader(SCRIPT_DIR"2.2.1.brdf.vs.glsl", SCRIPT_DIR"2.2.1.brdf.fs.glsl", NULL);
     MyShader backgroundShader(SCRIPT_DIR"2.2.1.background.vs.glsl", SCRIPT_DIR"2.2.1.background.fs.glsl", NULL);
 
-    pbrShader.use();
-    pbrShader.setInt("irradianceMap", 0);
-    pbrShader.setInt("prefilterMap", 1);
-    pbrShader.setInt("brdfLUT", 2);
-    pbrShader.setVec3("albedo", 198.f/255.f, 200.f/255.f, 200.f/255.f);
-    pbrShader.setFloat("ao", 1.0f);
-
-    pbrModelShader.use();
-    pbrModelShader.setInt("irradianceMap", 0);
-    pbrModelShader.setInt("prefilterMap", 1);
-    pbrModelShader.setInt("brdfLUT", 2);
-    pbrModelShader.setInt("normalMap", 5);
-    pbrModelShader.setInt("metallicMap", 6);
-    pbrModelShader.setInt("roughnessMap", 7);
-//    pbrModelShader.setVec3("albedo", 198.f/255.f, 200.f/255.f, 200.f/255.f);
-    pbrModelShader.setFloat("ao", 1.0f);
+// set ndrsEnvShader's maps and values
+    ndrsEnvShader.use();
+    ndrsEnvShader.setInt("irradianceMap", 0);
+    ndrsEnvShader.setInt("prefilterMap", 1);
+    ndrsEnvShader.setInt("brdfLUT", 2);
+    ndrsEnvShader.setInt("albedoMap", 4);
+    ndrsEnvShader.setInt("normalMap", 5);
+    ndrsEnvShader.setInt("metallicMap", 6);
+    ndrsEnvShader.setInt("roughnessMap", 7);
+    ndrsEnvShader.setFloat("ao", 1.0f);
 
     backgroundShader.use();
     backgroundShader.setInt("environmentMap", 0);
@@ -88,21 +84,34 @@ int main()
 
     // lights
     // ------
+    float D = 3.0f;
+    float H = 3.0f;
     glm::vec3 lightPositions[] = {
-            glm::vec3(-10.0f,  10.0f, 10.0f),
-            glm::vec3( 10.0f,  10.0f, 10.0f),
-            glm::vec3(-10.0f, -10.0f, 10.0f),
-            glm::vec3( 10.0f, -10.0f, 10.0f),
+            glm::vec3(-D,  H, D),
+            glm::vec3( D,  H, D),
+            glm::vec3(-D, H, -D),
+            glm::vec3( D, H, -D),
+            glm::vec3( 0.f, 2*H, 0.f),
     };
+    float L = 50.f;
     glm::vec3 lightColors[] = {
-            glm::vec3(300.0f, 300.0f, 300.0f),
-            glm::vec3(300.0f, 300.0f, 300.0f),
-            glm::vec3(300.0f, 300.0f, 300.0f),
-            glm::vec3(300.0f, 300.0f, 300.0f)
+            glm::vec3(L, L, L),
+            glm::vec3(L, L, L),
+            glm::vec3(L, L, L),
+            glm::vec3(L, L, L),
+            glm::vec3(L, L, L)
     };
-    int nrRows = 7;
-    int nrColumns = 7;
-    float spacing = 2.5;
+//    int nrRows = 7;
+//    int nrColumns = 7;
+//    float spacing = 2.5;
+    ndrsEnvShader.use();
+    for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
+    {
+//        glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
+//        newPos = lightPositions[i];
+        ndrsEnvShader.setVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
+        ndrsEnvShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+    }
 
     // pbr: setup framebuffer
     // ----------------------
@@ -118,19 +127,18 @@ int main()
 
     // model: load models from file
     // ---------------------------------
-//    Model capsule(SCRIPT_DIR"models/capsule/capsule.obj");
-//    Model stool(SCRIPT_DIR"models/Stool.obj");
-//    Model pear(SCRIPT_DIR"models/pear/pear_export.obj");
-//    Model chair(SCRIPT_DIR"models/Chairs/Chairs.obj");
-    Model gun(MODEL_DIR"gun/gun.FBX");
+//    Model gun(MODEL_DIR"gun/gun.FBX");
 
     // pbr: load the HDR environment map
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/lobby.hdr");
-    unsigned int normalMap = loadHDRTexture(MODEL_DIR"gun/Textures/Cerberus_N.tga");
-    unsigned int metallicMap = loadHDRTexture(MODEL_DIR"gun/Textures/Cerberus_M.tga");
-    unsigned int roughnessMap = loadHDRTexture(MODEL_DIR"gun/Textures/Cerberus_R.tga");
+    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/studio3.hdr");
+
+//    unsigned int albedoMap = loadTexture(TEX_DIR"iron/basecolor.png");
+//    unsigned int normalMap = loadTexture(TEX_DIR"iron/normal.png");
+//    unsigned int metallicMap = loadTexture(TEX_DIR"iron/metallic.png");
+//    unsigned int roughnessMap = loadTexture(TEX_DIR"iron/roughness.png");
+    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/47.png");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------
@@ -303,10 +311,9 @@ int main()
     // initialize static shader uniforms before rendering
     // --------------------------------------------------
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-    pbrShader.use();
-    pbrShader.setMat4("projection", projection);
-    pbrModelShader.use();
-    pbrModelShader.setMat4("projection", projection);
+    ndrsEnvShader.use();
+    ndrsEnvShader.setMat4("projection", projection);
+    ndrsEnvShader.setVec3("camPos", camera.Position);
     backgroundShader.use();
     backgroundShader.setMat4("projection", projection);
 
@@ -337,10 +344,11 @@ int main()
 
         // render scene, supplying the convoluted irradiance map to the final shader.
         // ------------------------------------------------------------------------------------------
-        pbrShader.use();
+//        pbrShader.use();
         glm::mat4 view = camera.getViewMatrix();
-        pbrShader.setMat4("view", view);
-        pbrShader.setVec3("camPos", camera.Position);
+        ndrsEnvShader.use();
+        ndrsEnvShader.setMat4("view", view);
+//        ndrsEnvShader.setVec3("camPos", camera.Position);
 
         // bind pre-computed IBL data
         glActiveTexture(GL_TEXTURE0);
@@ -350,107 +358,47 @@ int main()
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
 
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, ndrs[1]);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, ndrs[0]);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, ndrs[3]);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, ndrs[2]);
+
         // render rows*column number of spheres with material properties defined by textures (they all have the same material properties)
         glm::mat4 model = glm::mat4(1.0f);
-        //for (int row = 0; row < nrRows; ++row)
-        for (int row = 6; row < 7; ++row)
-        {
-            pbrShader.setFloat("metallic", (float)row / (float)nrRows);
-            //for (int col = 0; col < nrColumns; ++col)
-            for (int col = 0; col < 1; ++col)
-            {
-                // we clamp the roughness to 0.025 - 1.0 as perfectly smooth surfaces (roughness of 0.0) tend to look a bit off
-                // on direct lighting.
-                pbrShader.setFloat("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
+        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f,0.f,0.f));
+        ndrsEnvShader.setMat4("model", model);
+//        renderSphere(3.0);
+        renderQuad(1.0);
 
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(
-                        (float)(col - (nrColumns / 2)) * spacing,
-                        (float)(row - (nrRows / 2)) * spacing,
-                        -2.0f
-                ));
-                pbrShader.setMat4("model", model);
-                renderSphere(1.f);
-            }
-        }
+        saveImageFromWindow(RESULT_DIR"img.png", window);
 
-        // render light source (simply re-render sphere at light positions)
-        // this looks a bit off as we use the same shader, but it'll make their positions obvious and
-        // keeps the codeprint small.
+        // render lights' positions
 //        for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
 //        {
 //            glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
 //            newPos = lightPositions[i];
-//            pbrShader.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
-//            pbrShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+//            ndrsEnvShader.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
+//            ndrsEnvShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
 //
 //            model = glm::mat4(1.0f);
 //            model = glm::translate(model, newPos);
 //            model = glm::scale(model, glm::vec3(0.5f));
-//            pbrShader.setMat4("model", model);
-//            renderSphere(1.f);
+//            ndrsEnvShader.setMat4("model", model);
+//            renderSphere(1.0);
 //        }
-
-        // render models
-        pbrModelShader.use();
-        view = camera.getViewMatrix();
-        pbrModelShader.setMat4("view", view);
-        pbrModelShader.setVec3("camPos", camera.Position);
-
-        // bind pre-computed IBL data
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
-
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, normalMap);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, metallicMap);
-        glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, roughnessMap);
-//        // render rows*column number of spheres with material properties defined by textures (they all have the same material properties)
-//        model = glm::mat4(1.0f);
-//        for (int row = 0; row < nrRows; ++row)
-//        {
-//            pbrShader.setFloat("metallic", (float)row / (float)nrRows);
-//            for (int col = 0; col < nrColumns; ++col)
-//            {
-//                // we clamp the roughness to 0.025 - 1.0 as perfectly smooth surfaces (roughness of 0.0) tend to look a bit off
-//                // on direct lighting.
-//                pbrShader.setFloat("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
-//
-//                model = glm::mat4(1.0f);
-//                model = glm::translate(model, glm::vec3(
-//                        (float)(col - (nrColumns / 2)) * spacing,
-//                        (float)(row - (nrRows / 2)) * spacing,
-//                        -2.0f
-//                ));
-//                pbrShader.setMat4("model", model);
-//                capsule.Draw(pbrModelShader);
-//            }
-//        }
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f,0.f,0.f));
-        model = glm::scale(model, glm::vec3(.1f));
-        model = glm::translate(model, glm::vec3(-50.f,0.f,0.f));
-//        pbrModelShader.setFloat("metallic", .1f);
-//        pbrModelShader.setFloat("roughness", .8f);
-        pbrModelShader.setMat4("model", model);
-        gun.Draw(pbrModelShader);
 
         // render skybox (render as last to prevent overdraw)
-        backgroundShader.use();
-        backgroundShader.setMat4("view", view);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-//        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
-//        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
-        renderCube(1.f);
-
+//        backgroundShader.use();
+//        backgroundShader.setMat4("view", view);
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+////        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
+////        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
+//        renderCube(1.f);
 
         // render BRDF map to screen
 //        glViewport(0,0,BRDFLUT_SIZE,BRDFLUT_SIZE);
