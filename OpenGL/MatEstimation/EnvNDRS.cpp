@@ -84,8 +84,8 @@ int main()
 
     // lights
     // ------
-    float D = 3.0f;
-    float H = 3.0f;
+    float D = 10.0f;
+    float H = 10.0f;
     glm::vec3 lightPositions[] = {
             glm::vec3(-D,  H, D),
             glm::vec3( D,  H, D),
@@ -93,7 +93,7 @@ int main()
             glm::vec3( D, H, -D),
             glm::vec3( 0.f, 2*H, 0.f),
     };
-    float L = 50.f;
+    float L = 150.f;
     glm::vec3 lightColors[] = {
             glm::vec3(L, L, L),
             glm::vec3(L, L, L),
@@ -132,13 +132,13 @@ int main()
     // pbr: load the HDR environment map
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/studio3.hdr");
+    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/cafe.hdr");
 
 //    unsigned int albedoMap = loadTexture(TEX_DIR"iron/basecolor.png");
 //    unsigned int normalMap = loadTexture(TEX_DIR"iron/normal.png");
 //    unsigned int metallicMap = loadTexture(TEX_DIR"iron/metallic.png");
 //    unsigned int roughnessMap = loadTexture(TEX_DIR"iron/roughness.png");
-    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/47.png");
+    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/60.png");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------
@@ -347,8 +347,9 @@ int main()
 //        pbrShader.use();
         glm::mat4 view = camera.getViewMatrix();
         ndrsEnvShader.use();
+//        view = glm::rotate(view, glm::radians(-90.f), glm::vec3(1.f,0.f,0.f));
         ndrsEnvShader.setMat4("view", view);
-//        ndrsEnvShader.setVec3("camPos", camera.Position);
+        ndrsEnvShader.setVec3("camPos", camera.Position);
 
         // bind pre-computed IBL data
         glActiveTexture(GL_TEXTURE0);
@@ -369,12 +370,13 @@ int main()
 
         // render rows*column number of spheres with material properties defined by textures (they all have the same material properties)
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f,0.f,0.f));
+        model = glm::rotate(model, glm::radians(-100.f), glm::vec3(1.f,0.f,0.f));
+        model = glm::rotate(model, glm::radians(-5.f), glm::vec3(0.f,1.f,0.f));
         ndrsEnvShader.setMat4("model", model);
 //        renderSphere(3.0);
         renderQuad(1.0);
 
-        saveImageFromWindow(RESULT_DIR"img.png", window);
+//        saveImageFromWindow(RESULT_DIR"img.png", window);
 
         // render lights' positions
 //        for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
@@ -392,19 +394,13 @@ int main()
 //        }
 
         // render skybox (render as last to prevent overdraw)
-//        backgroundShader.use();
-//        backgroundShader.setMat4("view", view);
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-////        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
-////        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
-//        renderCube(1.f);
-
-        // render BRDF map to screen
-//        glViewport(0,0,BRDFLUT_SIZE,BRDFLUT_SIZE);
-//        brdfShader.use();
-//        renderQuad(1.f);
-
+        backgroundShader.use();
+        backgroundShader.setMat4("view", view);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
+//        glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
+        renderCube(1.f);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

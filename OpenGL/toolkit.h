@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include "MyShader.h"
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -22,8 +23,8 @@
 #define WIDTH 512
 //#define HEIGHT 1440
 #define HEIGHT 512
-#define CUBEMAP_SIZE 1440
-#define IRRADIANCEMAP_SIZE 128
+#define CUBEMAP_SIZE 1024
+#define IRRADIANCEMAP_SIZE 1024
 #define PREFILTEREDMAP_BASE_SIZE 1024
 #define BRDFLUT_SIZE 1024
 #define TITLE "learn opengl"
