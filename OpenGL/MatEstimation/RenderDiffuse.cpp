@@ -60,9 +60,12 @@ int main()
     ndrsEnvShader.setFloat("ao", 1.0f);
 
     std::string path = "/home/winter/MEDataset/train";
-//    std::string path = "/home/winter/MEDataset/some";
+//    std::string path = "/home/winter/MEDataset/7some";
 //    std::string path = "/home/winter/MEDataset/eval";
-    for (const auto & entry : fs::directory_iterator(path)) {
+    int rendered_count = 0;
+    clock_t t1 = clock();
+//    for (const auto & entry : fs::directory_iterator(path)) {
+    for (int name_idx=1; name_idx<=199069; name_idx++) {
         unsigned int captureFBO;
         unsigned int captureRBO;
         glGenFramebuffers(1, &captureFBO);
@@ -73,16 +76,16 @@ int main()
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBEMAP_SIZE, CUBEMAP_SIZE);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-        int hdr_idx = rand()%12 + 1;
+        int hdr_idx = rand()%15 + 1;
         string hdr_name = "/home/winter/code/LearnOpenGL/textures/hdr/name.hdr";
         string hdr_path = hdr_name.replace(hdr_name.find("name"), 4, to_string(hdr_idx));
-        cout<<"used hdr: "<<hdr_path<<endl;
         unsigned int hdrTexture = loadHDRTexture(hdr_path.c_str());
-//        unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/22.hdr");
+//        unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/18.hdr");
 
         // WWWWWWWWWWTTTTTTTTTTTTTTFFFFFFFFFFF ?????
         // MUUUUUUUUUUUUUUUUUUUUUUUST load it here ?????????????????
-        string mat_path = entry.path();
+//        string mat_path = entry.path();
+        std::string mat_path = "/home/winter/MEDataset/train/"+to_string(name_idx)+".png";
         unsigned int *ndrs = loadNDRS(mat_path.c_str());
         // FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK
 
@@ -269,16 +272,34 @@ int main()
         ndrsEnvShader.setMat4("model", model);
         renderQuad(1.0);
 
-        string save_path = mat_path.replace(mat_path.find("train"), 4, "diffuse_train");
+        string save_path = mat_path.replace(mat_path.find("train"), 5, "diffuse_train");
 //        string save_path = mat_path.replace(mat_path.find("some"), 4, "diffuse_some");
 //        string save_path = mat_path.replace(mat_path.find("eval"), 4, "diffuse_eval");
         save_path = save_path.replace(save_path.find(".png"), 4, "___diffuse.png");
         saveImageFromWindow(save_path.c_str(), window);
 
+
         glfwSwapBuffers(window);
-        glfwPollEvents();
+
+        glDeleteBuffers(1, &captureFBO);
+        glDeleteBuffers(1, &captureRBO);
+        glDeleteTextures(1, &hdrTexture);
+        glDeleteTextures(1, &brdfLUTTexture);
+        glDeleteTextures(1, &envCubemap);
+        glDeleteTextures(1, &irradianceMap);
+        glDeleteTextures(1, &prefilterMap);
+        glDeleteTextures(4, ndrs);
+
+        rendered_count ++;
+        if (rendered_count%100==0) {
+            clock_t t2 = clock();
+            float t_cost = ((float)(t2-t1))/CLOCKS_PER_SEC;
+            cout<<"1000 imgs cost: "<<t_cost<<" sec."<<endl;
+            t1 = clock();
+        }
     }
 
     glfwTerminate();
+
     return 0;
 }

@@ -311,6 +311,7 @@ void saveImageFromWindow(const char* filepath, GLFWwindow* w) {
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
     stbi_flip_vertically_on_write(true);
     stbi_write_png(filepath, width, height, nrChannels, buffer.data(), stride);
+    buffer.clear();
 }
 
 unsigned int cubeVAO = 0;
