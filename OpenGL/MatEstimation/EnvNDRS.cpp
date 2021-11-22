@@ -138,7 +138,7 @@ int main()
 //    unsigned int normalMap = loadTexture(TEX_DIR"iron/normal.png");
 //    unsigned int metallicMap = loadTexture(TEX_DIR"iron/metallic.png");
 //    unsigned int roughnessMap = loadTexture(TEX_DIR"iron/roughness.png");
-    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/47.png");
+    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/8.png");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------
@@ -374,7 +374,7 @@ int main()
 //        renderSphere(3.0);
         renderQuad(1.0);
 
-        saveImageFromWindow(RESULT_DIR"img.png", window);
+        saveImageFromWindow(RESULT_DIR"3.png", window);
 
         // render lights' positions
 //        for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
