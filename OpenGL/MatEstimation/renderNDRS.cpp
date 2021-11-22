@@ -6,14 +6,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #include <iostream>
-#include <vector>
-
 #include "../MyShader.h"
 #include "../MyCamera.h"
-#include "../Model.h"
-//#include "params.h"
 #include "../toolkit.h"
 
 using namespace std;
@@ -81,7 +76,7 @@ int main() {
 //        shader.setVec3("lightColors["+to_string(i)+"]", lightColors[i]);
 //    }
 
-    auto LIGHT_COLOR = 30;
+    auto LIGHT_COLOR = 50;
     auto lightPos = glm::vec3(0.5f, 0.5f, 1.f);
     auto lightColor = glm::vec3(LIGHT_COLOR, LIGHT_COLOR, LIGHT_COLOR);
     shader.setVec3("lightPosition", lightPos);
@@ -93,7 +88,7 @@ int main() {
 //    unsigned int metallicMap = loadTexture(TEX_DIR"iron/metallic.png");
 //    unsigned int roughnessMap = loadTexture(TEX_DIR"iron/roughness.png");
     unsigned int aoMap = loadTexture(TEX_DIR"iron/ao.png");
-    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/82.png");
+    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/40.png");
 
     // create frame_buffer & render_buffer
 //    unsigned int fbo, rbo;

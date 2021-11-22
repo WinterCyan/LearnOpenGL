@@ -99,10 +99,10 @@ vec3 fresnelSchlick(float cosTheta, vec3 specular)
 //    return metallic + (1.0 - metallic) * pow(1.0 - cosTheta, 5.0);
 //}
 // ----------------------------------------------------------------------------
-//vec3 fresnelSchlickRoughness(float cosTheta, vec3 metallic, float roughness)
-//{
-//    return metallic + (max(vec3(1.0 - roughness), metallic) - metallic) * pow(1.0 - cosTheta, 5.0);
-//}
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 metallic, float roughness)
+{
+    return metallic + (max(vec3(1.0 - roughness), metallic) - metallic) * pow(cosTheta, 5.0);
+}
 // ----------------------------------------------------------------------------
 void main()
 {
@@ -137,7 +137,7 @@ void main()
         vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), metallic);
 
         vec3 nominator    = NDF * G * F;
-        float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+        float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // 0.001 to prevent divide by zero.
         vec3 specular = nominator / denominator;
 
         // kS is equal to Fresnel
@@ -164,7 +164,7 @@ void main()
 
     vec3 kS = F;
     vec3 kD = vec3(1.0) - kS;
-    kD *= 1.0 - metallic;
+    kD *= vec3(1.0) - metallic;
 
     vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * albedo;
@@ -176,16 +176,18 @@ void main()
     vec3 specular = prefilteredColor * (metallic * brdf.x + brdf.y);
 
     vec3 ambient = (kD * diffuse + specular) * ao;
+//    vec3 ambient = (kD * diffuse) * ao;
 
     //ambient = vec3(.1,.1,.1);
-    vec3 color = ambient + Lo;
-    //vec3 color = ambient;
+//    vec3 color = ambient + Lo;
+//    vec3 color = Lo;
+    vec3 color = ambient;
 
     // HDR tonemapping
-//    color = color / (color + vec3(1.0));
-    // gamma correct
+    color = color / (color + vec3(1.0));
+//     gamma correct
     color = pow(color, vec3(1.0/2.2));
 
-    FragColor = vec4(color , 1.0);
+    FragColor = vec4(color, 1.0);
 
 }

@@ -85,8 +85,6 @@ vec3 fresnelSchlick(float cosTheta, vec3 specular)
 void main()
 {
     vec3 albedo     = pow(texture(albedoMap, TexCoords).rgb, vec3(2.2));
-//    vec3 albedo     = texture(albedoMap, TexCoords).rgb;
-//    vec3 metallic  = texture(metallicMap, TexCoords).rgb;
     vec3 metallic   = pow(texture(metallicMap, TexCoords).rgb, vec3(2.2));
     float roughness = texture(roughnessMap, TexCoords).r;
     float ao        = texture(aoMap, TexCoords).r;
@@ -144,7 +142,7 @@ void main()
     vec3 color = ambient + Lo;
 
     // HDR tonemapping
-//    color = color / (color + vec3(1.0));
+    color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2));
 

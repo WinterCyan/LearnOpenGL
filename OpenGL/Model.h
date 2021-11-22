@@ -12,8 +12,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <string>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h"
 #include "Mesh.h"
 
 using namespace std;
