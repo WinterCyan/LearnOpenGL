@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <filesystem>
+#include <unistd.h>
 #include "../MyShader.h"
 #include "../toolkit.h"
 
@@ -58,7 +59,8 @@ int main()
     ndrsEnvShader.setInt("roughnessMap", 7);
     ndrsEnvShader.setFloat("ao", 1.0f);
 
-    std::string path = "/home/winter/MEDataset/some";
+    std::string path = "/home/winter/MEDataset/train";
+//    std::string path = "/home/winter/MEDataset/some";
 //    std::string path = "/home/winter/MEDataset/eval";
     for (const auto & entry : fs::directory_iterator(path)) {
         unsigned int captureFBO;
@@ -71,7 +73,12 @@ int main()
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBEMAP_SIZE, CUBEMAP_SIZE);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-        unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/center.hdr");
+        int hdr_idx = rand()%12 + 1;
+        string hdr_name = "/home/winter/code/LearnOpenGL/textures/hdr/name.hdr";
+        string hdr_path = hdr_name.replace(hdr_name.find("name"), 4, to_string(hdr_idx));
+        cout<<"used hdr: "<<hdr_path<<endl;
+        unsigned int hdrTexture = loadHDRTexture(hdr_path.c_str());
+//        unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/22.hdr");
 
         // WWWWWWWWWWTTTTTTTTTTTTTTFFFFFFFFFFF ?????
         // MUUUUUUUUUUUUUUUUUUUUUUUST load it here ?????????????????
@@ -255,13 +262,17 @@ int main()
         glBindTexture(GL_TEXTURE_2D, ndrs[2]);
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+        float R1 = rand()%20 + 80;
+        float R2 = rand()%20 - 10;
+        model = glm::rotate(model, glm::radians(-R1), glm::vec3(1.f,0.f,0.f));
+        model = glm::rotate(model, glm::radians(R2), glm::vec3(0.f,1.f,0.f));
         ndrsEnvShader.setMat4("model", model);
         renderQuad(1.0);
 
-        string save_path = mat_path.replace(mat_path.find("some"), 4, "diffuse_some");
+        string save_path = mat_path.replace(mat_path.find("train"), 4, "diffuse_train");
+//        string save_path = mat_path.replace(mat_path.find("some"), 4, "diffuse_some");
 //        string save_path = mat_path.replace(mat_path.find("eval"), 4, "diffuse_eval");
-        save_path = save_path.replace(save_path.find(".png"), 4, "_diffuse.png");
+        save_path = save_path.replace(save_path.find(".png"), 4, "___diffuse.png");
         saveImageFromWindow(save_path.c_str(), window);
 
         glfwSwapBuffers(window);
