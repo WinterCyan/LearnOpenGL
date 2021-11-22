@@ -63,7 +63,7 @@ int main()
     // -------------------------
 //    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
 //    MyShader pbrModelShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.withtexture.glsl", NULL);
-    MyShader ndrsEnvShader(SCRIPT_DIR"ndrsEnv.vs.glsl", SCRIPT_DIR"ndrsEnv.gs.glsl", NULL);
+    MyShader ndrsEnvShader(SCRIPT_DIR"ndrsEnv.vs.glsl", SCRIPT_DIR"render_diffuse.fs.glsl", NULL);
 
     MyShader equirectangularToCubemapShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl", NULL);
     MyShader irradianceShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.irradiance_convolution.fs.glsl", NULL);
@@ -86,32 +86,32 @@ int main()
     backgroundShader.setInt("environmentMap", 0);
 
 
-    // lights
-    // ------
-    float D = 10.0f;
-    float H = 10.0f;
-    glm::vec3 lightPositions[] = {
-            glm::vec3(-D,  H, D),
-            glm::vec3( D,  H, D),
-            glm::vec3(-D, H, -D),
-            glm::vec3( D, H, -D),
-            glm::vec3( 0.f, sqrt(3.0)*H, 0.f),
-    };
-    float L = 300.f;
-    glm::vec3 lightColors[] = {
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L)
-    };
+//    // lights
+//    // ------
+//    float D = 10.0f;
+//    float H = 10.0f;
+//    glm::vec3 lightPositions[] = {
+//            glm::vec3(-D,  H, D),
+//            glm::vec3( D,  H, D),
+//            glm::vec3(-D, H, -D),
+//            glm::vec3( D, H, -D),
+//            glm::vec3( 0.f, sqrt(3.0)*H, 0.f),
+//    };
+//    float L = 300.f;
+//    glm::vec3 lightColors[] = {
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L)
+//    };
 
-    ndrsEnvShader.use();
-    for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
-    {
-        ndrsEnvShader.setVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
-        ndrsEnvShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-    }
+//    ndrsEnvShader.use();
+//    for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
+//    {
+//        ndrsEnvShader.setVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
+//        ndrsEnvShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+//    }
 
     // pbr: setup framebuffer
     // ----------------------
@@ -129,7 +129,7 @@ int main()
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
     // split dataset and load different HDRs to render diffuse
-    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/factory.hdr");
+    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/studio.hdr");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------
@@ -312,19 +312,11 @@ int main()
     backgroundShader.use();
     backgroundShader.setMat4("projection", projection);
 
-//    // ------------ set on run ------------
-//    ndrsEnvShader.use();
-//    ndrsEnvShader.setVec3("camPos", camera.Position);
-//    // ------------ set on run ------------
-
     // then before rendering, configure the viewport to the original framebuffer's screen dimensions
     int scrWidth, scrHeight;
     glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
     glViewport(0, 0, scrWidth, scrHeight);
 
-    // render loop
-    // -----------
-//    while (!glfwWindowShouldClose(window))
     std::string path = "/home/winter/MEDataset/some";
 //    std::string path = "/home/winter/MEDataset/eval";
     for (const auto & entry : fs::directory_iterator(path))
@@ -382,7 +374,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        sleep(2);
+//        sleep(3);
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

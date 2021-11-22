@@ -23,10 +23,10 @@
 #define WIDTH 512
 //#define HEIGHT 1440
 #define HEIGHT 512
-#define CUBEMAP_SIZE 1024
-#define IRRADIANCEMAP_SIZE 1024
-#define PREFILTEREDMAP_BASE_SIZE 1024
-#define BRDFLUT_SIZE 1024
+#define CUBEMAP_SIZE 512
+#define IRRADIANCEMAP_SIZE 32
+#define PREFILTEREDMAP_BASE_SIZE 128
+#define BRDFLUT_SIZE 512
 #define TITLE "learn opengl"
 #define SCRIPT_DIR "/home/winter/code/LearnOpenGL/scripts/"
 #define TEX_DIR "/home/winter/code/LearnOpenGL/textures/"
