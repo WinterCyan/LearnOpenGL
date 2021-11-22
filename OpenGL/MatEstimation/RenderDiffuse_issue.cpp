@@ -1,5 +1,5 @@
 //
-// Created by winter on 2021/11/14.
+// Created by winter on 2021/11/18.
 //
 
 #include <GL/glew.h>
@@ -7,10 +7,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <time.h>
 #include "../MyShader.h"
 #include "../toolkit.h"
+#include <filesystem>
+#include <unistd.h>
 
 using namespace std;
+namespace fs = std::filesystem;
 
 int main()
 {
@@ -57,7 +61,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-//    MyShader ndrsEnvShader(SCRIPT_DIR"ndrsEnv.vs.glsl", SCRIPT_DIR"ndrsEnv.gs.glsl", NULL);
+//    MyShader pbrShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.glsl", NULL);
+//    MyShader pbrModelShader(SCRIPT_DIR"2.2.1.pbr.vs.glsl", SCRIPT_DIR"2.2.1.pbr.fs.withtexture.glsl", NULL);
     MyShader ndrsEnvShader(SCRIPT_DIR"ndrsEnv.vs.glsl", SCRIPT_DIR"render_diffuse.fs.glsl", NULL);
 
     MyShader equirectangularToCubemapShader(SCRIPT_DIR"2.2.1.cubemap.vs.glsl", SCRIPT_DIR"2.2.1.equirectangular_to_cubemap.fs.glsl", NULL);
@@ -81,36 +86,32 @@ int main()
     backgroundShader.setInt("environmentMap", 0);
 
 
-    // lights
-    // ------
-    float D = 10.0f;
-    float H = 10.0f;
-    glm::vec3 lightPositions[] = {
-            glm::vec3(-D,  H, D),
-            glm::vec3( D,  H, D),
-            glm::vec3(-D, H, -D),
-            glm::vec3( D, H, -D),
-            glm::vec3( 0.f, 2*H, 0.f),
-    };
-    float L = 300.f;
-    glm::vec3 lightColors[] = {
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L),
-            glm::vec3(L, L, L)
-    };
-//    int nrRows = 7;
-//    int nrColumns = 7;
-//    float spacing = 2.5;
-    ndrsEnvShader.use();
-    for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
-    {
-//        glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
-//        newPos = lightPositions[i];
-        ndrsEnvShader.setVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
-        ndrsEnvShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-    }
+//    // lights
+//    // ------
+//    float D = 10.0f;
+//    float H = 10.0f;
+//    glm::vec3 lightPositions[] = {
+//            glm::vec3(-D,  H, D),
+//            glm::vec3( D,  H, D),
+//            glm::vec3(-D, H, -D),
+//            glm::vec3( D, H, -D),
+//            glm::vec3( 0.f, sqrt(3.0)*H, 0.f),
+//    };
+//    float L = 300.f;
+//    glm::vec3 lightColors[] = {
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L),
+//            glm::vec3(L, L, L)
+//    };
+
+//    ndrsEnvShader.use();
+//    for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
+//    {
+//        ndrsEnvShader.setVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
+//        ndrsEnvShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+//    }
 
     // pbr: setup framebuffer
     // ----------------------
@@ -124,20 +125,11 @@ int main()
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBEMAP_SIZE, CUBEMAP_SIZE);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-    // model: load models from file
-    // ---------------------------------
-//    Model gun(MODEL_DIR"gun/gun.FBX");
-
     // pbr: load the HDR environment map
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/center.hdr");
-
-//    unsigned int albedoMap = loadTexture(TEX_DIR"iron/basecolor.png");
-//    unsigned int normalMap = loadTexture(TEX_DIR"iron/normal.png");
-//    unsigned int metallicMap = loadTexture(TEX_DIR"iron/metallic.png");
-//    unsigned int roughnessMap = loadTexture(TEX_DIR"iron/roughness.png");
-    unsigned int* ndrs = loadNDRS(TEX_DIR"ndrs/84.png");
+    // split dataset and load different HDRs to render diffuse
+    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/lake.hdr");
 
     // pbr: setup cubemap to render to and attach to framebuffer
     // ---------------------------------------------------------
@@ -309,10 +301,14 @@ int main()
 
     // initialize static shader uniforms before rendering
     // --------------------------------------------------
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     ndrsEnvShader.use();
+
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     ndrsEnvShader.setMat4("projection", projection);
+    glm::mat4 view = camera.getViewMatrix();
+    ndrsEnvShader.setMat4("view", view);
     ndrsEnvShader.setVec3("camPos", camera.Position);
+
     backgroundShader.use();
     backgroundShader.setMat4("projection", projection);
 
@@ -321,33 +317,22 @@ int main()
     glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
     glViewport(0, 0, scrWidth, scrHeight);
 
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
+//    std::string path = "/home/winter/MEDataset/some";
+    std::string path = "/home/winter/MEDataset/eval";
+    for (const auto & entry : fs::directory_iterator(path))
     {
-        // per-frame time logic
-        // --------------------
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
-        // input
-        // -----
         processInput(window);
-
-        // render
-        // ------
-        glClearColor(0.f,0.f,0.f,1.f);
-//        glClearColor(1.0, 0.782, 0.344,1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // render scene, supplying the convoluted irradiance map to the final shader.
-        // ------------------------------------------------------------------------------------------
-//        pbrShader.use();
         glm::mat4 view = camera.getViewMatrix();
         ndrsEnvShader.use();
         ndrsEnvShader.setMat4("view", view);
-//        ndrsEnvShader.setVec3("camPos", camera.Position);
+        ndrsEnvShader.setVec3("camPos", camera.Position);
+
+        // render
+        glClearColor(0.f,0.f,0.f,1.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // bind pre-computed IBL data
         glActiveTexture(GL_TEXTURE0);
@@ -357,6 +342,9 @@ int main()
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
 
+        // load different mat and set
+        string mat_path = entry.path();
+        unsigned int* ndrs = loadNDRS(mat_path.c_str());
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, ndrs[1]);
         glActiveTexture(GL_TEXTURE5);
@@ -366,31 +354,38 @@ int main()
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, ndrs[2]);
 
-        // render rows*column number of spheres with material properties defined by textures (they all have the same material properties)
+        // set random variables
+        float R1 = rand()%20 + 80;
+        float R2 = rand()%20 - 10;
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f,0.f,0.f));
+//        model = glm::rotate(model, glm::radians(-90.f), glm::vec3(1.f,0.f,0.f));
+        model = glm::rotate(model, glm::radians(-R1), glm::vec3(1.f,0.f,0.f));
+        model = glm::rotate(model, glm::radians(R2), glm::vec3(0.f,1.f,0.f));
         ndrsEnvShader.setMat4("model", model);
         renderQuad(1.0);
 
-//        saveImageFromWindow(RESULT_DIR"33.png", window);
+//        string save_path = mat_path.replace(mat_path.find("some"), 4, "diffuse_some");
+        string save_path = mat_path.replace(mat_path.find("eval"), 4, "diffuse_eval");
+        save_path = save_path.replace(save_path.find(".png"), 4, "_diffuse.png");
+        saveImageFromWindow(save_path.c_str(), window);
 
         // render BRDF map to screen
 //        glViewport(0,0,BRDFLUT_SIZE,BRDFLUT_SIZE);
 //        brdfShader.use();
 //        renderQuad(1.f);
 
-        // render skybox
         backgroundShader.use();
         backgroundShader.setMat4("view", view);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-        renderCube(1.0f);
-
+        renderCube(1.);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+//        sleep(3);
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

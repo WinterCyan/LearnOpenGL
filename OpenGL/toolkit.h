@@ -56,7 +56,7 @@ bool hdr = true;
 bool hdrKeyPressed = false;
 float exposure = 1.0f;
 
-MyCamera camera(glm::vec3(0.f, 3.f, 0.f));
+MyCamera camera(glm::vec3(0.f, 5.f, 0.f));
 
 void mouse_callback(GLFWwindow* win, double xpos, double ypos){
     if (firstMouse) {
