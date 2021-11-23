@@ -131,7 +131,7 @@ int main()
     // pbr: load the HDR environment map
     // ----------------- !!! MUST load HDR texture AFTER loading model !!! -----------------------
     // ---------------------------------
-    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/center.hdr");
+    unsigned int hdrTexture = loadHDRTexture(TEX_DIR"hdr/2.hdr");
 
 //    unsigned int albedoMap = loadTexture(TEX_DIR"iron/basecolor.png");
 //    unsigned int normalMap = loadTexture(TEX_DIR"iron/normal.png");

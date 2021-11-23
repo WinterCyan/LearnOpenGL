@@ -166,17 +166,17 @@ unsigned int loadTexture(char const * path)
 
 unsigned int* loadNDRS(char const * path)
 {
-    unsigned int* textureIDs = new unsigned int[4];
+    auto* textureIDs = new unsigned int[4];
     glGenTextures(4, textureIDs);
 
     int width, height, nrComponents;
     unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
     int single_width = width/5;
 
-    unsigned char *n = new unsigned char[single_width * height * nrComponents];
-    unsigned char *d = new unsigned char[single_width * height * nrComponents];
-    unsigned char *r = new unsigned char[single_width * height * nrComponents];
-    unsigned char *s = new unsigned char[single_width * height * nrComponents];
+    auto *n = new unsigned char[single_width * height * nrComponents];
+    auto *d = new unsigned char[single_width * height * nrComponents];
+    auto *r = new unsigned char[single_width * height * nrComponents];
+    auto *s = new unsigned char[single_width * height * nrComponents];
     for (int col=0; col<single_width; col++) {
         for (int row=0; row<height; row++) {
             for (int c=0; c<nrComponents; c++){
@@ -236,6 +236,10 @@ unsigned int* loadNDRS(char const * path)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
+        free(n);
+        free(d);
+        free(r);
+        free(s);
     }
     else
     {
@@ -314,9 +318,9 @@ void saveImageFromWindow(const char* filepath, GLFWwindow* w) {
     buffer.clear();
 }
 
-unsigned int cubeVAO = 0;
-unsigned int cubeVBO = 0;
 void renderCube(float A){
+    unsigned int cubeVAO = 0;
+    unsigned int cubeVBO = 0;
     if (cubeVAO == 0) {
         float cubeVertices[] = {
                 // back face
@@ -379,6 +383,9 @@ void renderCube(float A){
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
+
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &cubeVBO);
 }
 
 void renderQuad(float A){
@@ -396,6 +403,7 @@ void renderQuad(float A){
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
         glGenBuffers(1, &quadVBO);
+
         glBindVertexArray(quadVAO);
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
@@ -409,12 +417,15 @@ void renderQuad(float A){
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
+
+    glDeleteVertexArrays(1, &quadVAO);
+    glDeleteBuffers(1, &quadVBO);
 }
 
-unsigned int sphereVAO = 0;
-unsigned int indexCount;
 void renderSphere(float R)
 {
+    unsigned int sphereVAO = 0;
+    unsigned int indexCount;
     if (sphereVAO == 0)
     {
         glGenVertexArrays(1, &sphereVAO);

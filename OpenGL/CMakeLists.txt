@@ -3,6 +3,9 @@ project(learnopengl)
 link_libraries(GL GLU GLEW glfw3 X11 Xrandr pthread Xi dl Xinerama Xcursor assimp)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+
 add_executable(brdf BRDF.cpp)
 add_executable(ibl IBL.cpp)
 add_executable(model model.cpp)

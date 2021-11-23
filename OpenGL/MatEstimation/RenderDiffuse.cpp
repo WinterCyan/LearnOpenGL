@@ -58,6 +58,7 @@ int main()
     ndrsEnvShader.setInt("metallicMap", 6);
     ndrsEnvShader.setInt("roughnessMap", 7);
     ndrsEnvShader.setFloat("ao", 1.0f);
+    ndrsEnvShader.setVec3("camPos", camera.Position);
 
     std::string path = "/home/winter/MEDataset/train";
 //    std::string path = "/home/winter/MEDataset/7some";
@@ -65,17 +66,7 @@ int main()
     int rendered_count = 0;
     clock_t t1 = clock();
 //    for (const auto & entry : fs::directory_iterator(path)) {
-    for (int name_idx=1; name_idx<=199069; name_idx++) {
-        unsigned int captureFBO;
-        unsigned int captureRBO;
-        glGenFramebuffers(1, &captureFBO);
-        glGenRenderbuffers(1, &captureRBO);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBEMAP_SIZE, CUBEMAP_SIZE);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-
+    for (int name_idx=199069; name_idx>=1; name_idx--) {
         int hdr_idx = rand()%15 + 1;
         string hdr_name = "/home/winter/code/LearnOpenGL/textures/hdr/name.hdr";
         string hdr_path = hdr_name.replace(hdr_name.find("name"), 4, to_string(hdr_idx));
@@ -89,18 +80,30 @@ int main()
         unsigned int *ndrs = loadNDRS(mat_path.c_str());
         // FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK
 
+
+        // ----------------------- RBO and FBO --------------------------
+        unsigned int captureFBO;
+        unsigned int captureRBO;
+        glGenFramebuffers(1, &captureFBO);
+        glGenRenderbuffers(1, &captureRBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBEMAP_SIZE, CUBEMAP_SIZE);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+        // ----------------------- RBO and FBO --------------------------
+
+
+        // ----------------------- Env CubeMap --------------------------
         unsigned int envCubemap;
         glGenTextures(1, &envCubemap);
         glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
         for (unsigned int i = 0; i < 6; ++i) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, CUBEMAP_SIZE, CUBEMAP_SIZE, 0, GL_RGB,
-                         GL_FLOAT, nullptr);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, CUBEMAP_SIZE, CUBEMAP_SIZE, 0, GL_RGB, GL_FLOAT, nullptr);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER,
-                        GL_LINEAR_MIPMAP_LINEAR); // enable pre-filter mipmap sampling (combatting visible dots artifact)
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // enable pre-filter mipmap sampling (combatting visible dots artifact)
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -131,6 +134,7 @@ int main()
         for (unsigned int i = 0; i < 6; ++i) {
             equirectangularToCubemapShader.setMat4("view", captureViews[i]);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             renderCube(1.f);
         }
@@ -138,7 +142,11 @@ int main()
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
         glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        // ----------------------- Env CubeMap --------------------------
 
+
+
+        // ----------------------- Irradiance Map --------------------------
         unsigned int irradianceMap;
         glGenTextures(1, &irradianceMap);
         glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
@@ -165,11 +173,16 @@ int main()
         for (unsigned int i = 0; i < 6; ++i) {
             irradianceShader.setMat4("view", captureViews[i]);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             renderCube(1.f);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // ----------------------- Irradiance Map --------------------------
 
+
+
+        // ----------------------- PreFilter Map --------------------------
         unsigned int prefilterMap;
         glGenTextures(1, &prefilterMap);
         glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
@@ -204,12 +217,17 @@ int main()
             for (unsigned int i = 0; i < 6; ++i) {
                 prefilterShader.setMat4("view", captureViews[i]);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 renderCube(1.f);
             }
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // ----------------------- PreFilter Map --------------------------
 
+
+
+        // ----------------------- BRDF LUT Map --------------------------
         unsigned int brdfLUTTexture;
         glGenTextures(1, &brdfLUTTexture);
 
@@ -226,27 +244,22 @@ int main()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
 
         glViewport(0, 0, BRDFLUT_SIZE, BRDFLUT_SIZE);
-        brdfShader.use();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        brdfShader.use();
         renderQuad(1.f);
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // ----------------------- BRDF LUT Map --------------------------
 
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) WIDTH / (float) HEIGHT, 0.1f,100.0f);
-        ndrsEnvShader.use();
-        ndrsEnvShader.setMat4("projection", projection);
-        ndrsEnvShader.setVec3("camPos", camera.Position);
 
+
+        // ----------------------- BRDF LUT Map --------------------------
         int scrWidth, scrHeight;
         glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
         glViewport(0, 0, scrWidth, scrHeight);
 
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glm::mat4 view = camera.getViewMatrix();
-        ndrsEnvShader.use();
-        ndrsEnvShader.setMat4("view", view);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
@@ -269,6 +282,7 @@ int main()
         float R2 = rand()%20 - 10;
         model = glm::rotate(model, glm::radians(-R1), glm::vec3(1.f,0.f,0.f));
         model = glm::rotate(model, glm::radians(R2), glm::vec3(0.f,1.f,0.f));
+        ndrsEnvShader.use();
         ndrsEnvShader.setMat4("model", model);
         renderQuad(1.0);
 
@@ -279,22 +293,22 @@ int main()
         saveImageFromWindow(save_path.c_str(), window);
 
 
-        glfwSwapBuffers(window);
+//        glfwSwapBuffers(window);
 
         glDeleteBuffers(1, &captureFBO);
         glDeleteBuffers(1, &captureRBO);
         glDeleteTextures(1, &hdrTexture);
+        glDeleteTextures(4, ndrs);
         glDeleteTextures(1, &brdfLUTTexture);
         glDeleteTextures(1, &envCubemap);
         glDeleteTextures(1, &irradianceMap);
         glDeleteTextures(1, &prefilterMap);
-        glDeleteTextures(4, ndrs);
 
         rendered_count ++;
-        if (rendered_count%100==0) {
+        if (rendered_count%10000==0) {
             clock_t t2 = clock();
             float t_cost = ((float)(t2-t1))/CLOCKS_PER_SEC;
-            cout<<"1000 imgs cost: "<<t_cost<<" sec."<<endl;
+            cout<<"10000 imgs cost: "<<t_cost<<" sec."<<endl;
             t1 = clock();
         }
     }
