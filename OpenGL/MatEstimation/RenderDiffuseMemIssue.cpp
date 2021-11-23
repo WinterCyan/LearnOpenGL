@@ -15,8 +15,16 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-int main()
+int main(int argc, char **argv)
 {
+//    cout<<"argc: "<<argc<<endl;
+//    cout<<"args: ";
+//    for (int i=0; i<argc; i++) cout<<argv[i]<<" ";
+    if (argc != 3) cout<<"please specify begin_from param.";
+
+    int begin_from = atoi(argv[1]);
+    int period = atoi(argv[2]);
+    cout<<"begin from "<<begin_from<<" ..."<<endl;
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -66,7 +74,8 @@ int main()
     int rendered_count = 0;
     clock_t t1 = clock();
 //    for (const auto & entry : fs::directory_iterator(path)) {
-    for (int name_idx=199069; name_idx>=1; name_idx--) {
+    for (int name_idx=begin_from; name_idx<begin_from+period; name_idx++) {
+        if (name_idx > 199069) return 0;
         int hdr_idx = rand()%15 + 1;
         string hdr_name = "/home/winter/code/LearnOpenGL/textures/hdr/name.hdr";
         string hdr_path = hdr_name.replace(hdr_name.find("name"), 4, to_string(hdr_idx));
@@ -253,7 +262,7 @@ int main()
 
 
 
-        // ----------------------- BRDF LUT Map --------------------------
+        // ----------------------- render diffuse --------------------------
         int scrWidth, scrHeight;
         glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
         glViewport(0, 0, scrWidth, scrHeight);
@@ -268,6 +277,7 @@ int main()
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
 
+
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, ndrs[1]);
         glActiveTexture(GL_TEXTURE5);
@@ -276,6 +286,7 @@ int main()
         glBindTexture(GL_TEXTURE_2D, ndrs[3]);
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, ndrs[2]);
+
 
         glm::mat4 model = glm::mat4(1.0f);
         float R1 = rand()%20 + 80;
@@ -287,22 +298,30 @@ int main()
         renderQuad(1.0);
 
         string save_path = mat_path.replace(mat_path.find("train"), 5, "diffuse_train");
-//        string save_path = mat_path.replace(mat_path.find("some"), 4, "diffuse_some");
-//        string save_path = mat_path.replace(mat_path.find("eval"), 4, "diffuse_eval");
         save_path = save_path.replace(save_path.find(".png"), 4, "___diffuse.png");
         saveImageFromWindow(save_path.c_str(), window);
+
+        glDeleteTextures(1, &hdrTexture);
+        glDeleteTextures(1, &envCubemap);
+        glDeleteTextures(1, &irradianceMap);
+        glDeleteTextures(1, &prefilterMap);
+        glDeleteTextures(1, &brdfLUTTexture);
+        glDeleteTextures(4, ndrs);
 
 
 //        glfwSwapBuffers(window);
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
         glDeleteBuffers(1, &captureFBO);
         glDeleteBuffers(1, &captureRBO);
-        glDeleteTextures(1, &hdrTexture);
-        glDeleteTextures(4, ndrs);
-        glDeleteTextures(1, &brdfLUTTexture);
-        glDeleteTextures(1, &envCubemap);
-        glDeleteTextures(1, &irradianceMap);
-        glDeleteTextures(1, &prefilterMap);
+//        glDeleteTextures(1, &hdrTexture);
+//        glDeleteTextures(4, ndrs);
+//        glDeleteTextures(1, &brdfLUTTexture);
+//        glDeleteTextures(1, &envCubemap);
+//        glDeleteTextures(1, &irradianceMap);
+//        glDeleteTextures(1, &prefilterMap);
 
         rendered_count ++;
         if (rendered_count%10000==0) {
