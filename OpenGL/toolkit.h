@@ -20,9 +20,9 @@
 #include "Model.h"
 
 //#define WIDTH 2560
-#define WIDTH 512
+#define WIDTH 288
 //#define HEIGHT 1440
-#define HEIGHT 512
+#define HEIGHT 288
 #define CUBEMAP_SIZE 512
 #define IRRADIANCEMAP_SIZE 32
 #define PREFILTEREDMAP_BASE_SIZE 128
